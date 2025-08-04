@@ -171,6 +171,18 @@ p{
     text-decoration: none;
     color: #ffffff;
 }
+/* styleHome.css */
+.btn-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #4CAF50;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
 #contain_btn2{
     border: var(--border-color) solid 1px;
     background-color: var(--card-bg);

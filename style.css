@@ -1,15 +1,19 @@
-body {
+/* General Reset */
+* {
+  box-sizing: border-box;
   margin: 0;
+  padding: 0;
+}
+
+body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f1fafa;
   color: #111;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   min-height: 100vh;
-  padding: 20px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body.dark {
@@ -28,83 +32,61 @@ body.dark {
   border: none;
   font-size: 24px;
   cursor: pointer;
-}
-
-.logo {
-  text-align: center;
-  margin-bottom: 20px;
-}
-.logo img{
-    height: 250px;
-    width: 250px;
-}
-
-.logo h1 {
-  font-size: 28px;
-  color: #00757f;
-  margin: 0;
+  color: inherit;
 }
 
 .container {
-  background-color: #fff;
-  border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  padding: 30px 25px;
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
   width: 100%;
-  max-width: 320px;
-  text-align: center;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-body.dark .container {
+.login-box {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+  width: 320px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+body.dark .login-box {
   background-color: #2c2c2c;
 }
 
-.login-card h2 {
+.login-box h1 {
   font-size: 26px;
-  font-weight: 600;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 
-.login-card p {
+.login-box p {
   font-size: 14px;
-  color: #00757f;
   margin-bottom: 20px;
 }
 
-.login-card label {
+label {
   display: block;
   text-align: left;
-  font-size: 14px;
   margin-bottom: 5px;
+  font-size: 14px;
 }
 
-.login-card input {
+input {
   width: 100%;
-  padding: 10px 18px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  padding: 12px 16px;
   margin-bottom: 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
   font-size: 14px;
   background-color: #f9f9f9;
-  box-sizing: border-box;
 }
 
-body.dark .login-card input {
+body.dark input {
   background-color: #444;
   border: 1px solid #666;
   color: #fff;
-}
-
-.forgot {
-  text-align: right;
-  font-size: 12px;
-  margin-bottom: 18px;
-}
-
-.forgot a {
-  color: #00757f;
-  text-decoration: none;
 }
 
 button[type="submit"] {
@@ -112,14 +94,10 @@ button[type="submit"] {
   color: white;
   padding: 12px;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   width: 100%;
   font-size: 16px;
-  font-weight: 600;
   cursor: pointer;
-  margin-bottom: 18px;
-  box-shadow: 0 4px 12px rgba(0, 117, 127, 0.2);
-  transition: background-color 0.3s ease;
 }
 
 button[type="submit"]:hover {
@@ -128,6 +106,7 @@ button[type="submit"]:hover {
 
 .signup {
   font-size: 14px;
+  margin-top: 18px;
   color: #444;
 }
 
@@ -136,38 +115,31 @@ button[type="submit"]:hover {
   text-decoration: none;
 }
 
+/* Media Queries */
+
 @media (max-width: 480px) {
-  .container {
+  .login-box {
     width: 90%;
-    padding: 25px 20px;
+    padding: 24px 18px;
   }
 
-  .logo h1 {
-    font-size: 24px;
-  }
-
-  .login-card h2 {
+  .login-box h1 {
     font-size: 22px;
   }
 
-  .theme-toggle {
-    top: 10px;
-    right: 10px;
+  .login-box p,
+  label,
+  input,
+  button[type="submit"],
+  .signup {
+    font-size: 13px;
   }
 }
 
 @media (max-width: 768px) {
-  .container {
+  .login-box {
     width: 80%;
-    max-width: 320px;
-    padding: 28px 22px;
-  }
-
-  .logo h1 {
-    font-size: 26px;
-  }
-
-  .login-card h2 {
-    font-size: 24px;
+    max-width: 340px;
+    padding: 26px 22px;
   }
 }

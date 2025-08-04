@@ -1,40 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CampusCare | Personal Details</title>
-  <link rel="stylesheet" href="s.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Details</title>
+  <link rel="stylesheet" href="personal-details.css">
 </head>
 <body>
   <div class="theme-toggle">
     <button id="toggleTheme">☾</button>
   </div>
+
   <div class="container">
-    <div class="logo">
-          <img src="logo.png" alt="logo">
-      <h1>CampusCare</h1>
-    </div>
+    <div class="login-box">
+      <h1>Personal Details</h1>
+      <p>Please fill out your details</p>
 
-    <div class="form-card">
-      <h2>Personal Details</h2>
-      <form id="personalForm">
-        <label for="fullname">Full name</label>
-        <input type="text" id="fullname" name="fullname" placeholder="Alex Johnson" required />
+      <form id="detailsForm">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" required>
 
-        <label for="email">Email address</label>
-        <input type="email" id="email" name="email" placeholder="alex.johnson@example.edu" required />
+        <label for="gender">Gender</label>
+        <select id="gender" required>
+          <option value="">--Select--</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
 
-        <label for="dob">Date of birth</label>
-        <input type="text" id="dob" name="dob" placeholder="MM / DD / YYYY" required />
-        <div class="button-group">
-            <button type="submit">Save</button>
-            <button type="reset" onclick="logout()">Logout</button>
-        </div>
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" pattern="[0-9]{10}" placeholder="10-digit number" required>
+
+        <label for="college">College Name</label>
+        <input type="text" id="college" required>
+
+        <button type="submit">Submit</button>
       </form>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const toggleBtn = document.getElementById('toggleTheme');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      toggleBtn.textContent = document.body.classList.contains('dark') ? '☀︎' : '☾';
+    });
+
+    document.getElementById('detailsForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert("Personal details submitted successfully!");
+      window.location.href = "index.html"; // Redirect as needed
+    });
+  </script>
 </body>
 </html>
