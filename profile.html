@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCare</title>
+    <link rel="stylesheet" href="styleProfile.css">
+</head>
+<body>
+    <!-- header -->
+    <header>
+        <!-- logo -->
+        <div class="logo">
+            <img src="logo.png" alt="logo">
+        </div>
+        <!-- navbar -->
+        <div class="nav">
+            <h6><a href="Home.html">Home</a></h6>
+            <h6><a href="marketplace.html">Marketplace</a></h6>
+            <h6><a href="#">Mental Wellness</a></h6>
+            <h6><a href="#">Peer Support</a></h6>
+            <h6><a href="profile.html" class="active">Profile</a></h6>
+        </div>
+        <!-- buttons -->
+        <div class="btns1">
+            <button class="toggle-btn" id="theme" onclick="toggleTheme()"><span id="moonIcon">☾</span></button>
+            <button id="sign_in">Sign In</button>
+        </div>
+    </header>
+    <!-- info -->
+     <div class="info">
+        <img src="dp.png" alt="profile picture">
+        <div class="part">
+            <div class="vrPart">
+                <h1>John Doe</h1>
+                <a href="mailto:john.doe@university.edu">john.doe@university.edu</a>
+            </div>
+            <div class="hrPart">
+                <h2>Junior • Computer Science</h2>
+                <h2>Member since 9/1/2023</h2>
+            </div>
+        </div>
+        <div class="btn"></div><button style="display: flex; justify-content: center; align-items: center; gap: 5px;"><img src="edit.png" style="width: 20px; height: 20px;">Edit Profile</button></div>
+     </div>
+    <!-- cards -->
+     <div class="card_container">
+        <div class="card">
+            <img src="shopping_bag.png">
+            <h4>3</h4>
+            <p>Total Listings</p>
+        </div>
+        <div class="card">
+            <img src="heart.png">
+            <h4>3</h4>
+            <p>Wellness Checks</p>
+        </div>
+        <div class="card">
+            <img src="chat.png">
+            <h4>3</h4>
+            <p>Support Sessions</p>
+        </div>
+        <div class="card">
+            <img src="progress.png">
+            <h4>85%</h4>
+            <p>Latest Wellness</p>
+        </div>
+     </div>
+    <!-- drop list -->
+    <div class="tab-buttons">
+        <button onclick="showTab('tab1')">Listings</button>
+        <button onclick="showTab('tab2')">Wellness</button>
+        <button onclick="showTab('tab3')">Support</button>
+    </div>
+
+    <!-- Content Sections -->
+     <!-- listing cards -->
+    <div class="tab-content" id="tab1">
+        <div class="upper">
+            <h1>My Marketplace Listings</h1>
+            <button>+ Add New Listing</button>
+        </div>
+        <div class="parts">
+            <!-- card1 -->
+            <div class="listCard">
+                <img src="dsaBook.png">
+                <div class="vr">
+                    <div class="hr1">
+                        <h2>Data Structures Textbook</h2>
+                        <div class="text" style="background: oklch(.393 .095 152.535); color: oklch(.925 .084 155.995);"><h3>active</h3></div>
+                    </div>
+                    <h4>Rs. 235/-</h4>
+                    <div class="hr2">
+                        <p>24 views</p>
+                        <p>3 messages</p>
+                        <p>Posted 25/01/2025</p>
+                    </div>
+                </div>
+            </div>
+            <!-- card2 -->
+            <div class="listCard">
+                <img src="kyeboard.png">
+                <div class="vr">
+                    <div class="hr1">
+                        <h2>Wireless Keyboard</h2>
+                        <div class="text" style="background: oklch(.379 .146 265.522); color: oklch(.882 .059 254.128);"><h3>sold</h3></div>
+                    </div>
+                    <h4>Rs. 670/-</h4>
+                    <div class="hr2">
+                        <p>67 views</p>
+                        <p>8 messages</p>
+                        <p>Posted 10/02/2025</p>
+                    </div>
+                </div>
+            </div>
+            <!-- card3 -->
+            <div class="listCard">
+                <img src="desklamp.png">
+                <div class="vr">
+                    <div class="hr1">
+                        <h2>Desk Lamp</h2>
+                        <div class="text" style="background: oklch(.21 .034 264.665); color: oklch(.928 .006 264.531);"><h3>inactive</h3></div>
+                    </div>
+                    <h4>Rs. 150/-</h4>
+                    <div class="hr2">
+                        <p>12 views</p>
+                        <p>1 messages</p>
+                        <p>Posted 15/01/2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- wellness cards -->
+    <div class="tab-content" id="tab2">
+        <div class="upper">
+            <h1>Wellness Check History</h1>
+            <button>♡ Take New Quiz</button>
+        </div>
+        <div class="parts">
+            <!-- card1 -->
+            <div class="wellnessCard">
+                <div class="left">
+                    <div class="hr">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-4 h-4 text-muted-foreground" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+                        <p style="margin-bottom: 10px;"> 1/14/2025</p>
+                    </div>
+                    <div class="text" style="background: oklch(.379 .146 265.522); color: oklch(.882 .059 254.128);"><h3>good</h3></div>
+                </div>
+                <div class="right">
+                    <h4>85%</h4>
+                    <p>Wellness Score</p>
+                </div>
+            </div>
+            <!-- card2 -->
+            <div class="wellnessCard">
+                <div class="left">
+                    <div class="hr">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-4 h-4 text-muted-foreground" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+                        <p style="margin-bottom: 10px;"> 1/14/2025</p>
+                    </div>
+                    <div class="text" style="background: oklch(.393 .095 152.535); color: oklch(.925 .084 155.995);"><h3>excellent</h3></div>
+                </div>
+                <div class="right">
+                    <h4>85%</h4>
+                    <p>Wellness Score</p>
+                </div>
+            </div>
+            <!-- card3 -->
+            <div class="wellnessCard">
+                <div class="left">
+                    <div class="hr">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-4 h-4 text-muted-foreground" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg>
+                        <p style="margin-bottom: 10px;"> 1/14/2025</p>
+                    </div>
+                    <div class="text" style="background: oklch(.379 .146 265.522); color: oklch(.882 .059 254.128);"><h3>good</h3></div>
+                </div>
+                <div class="right">
+                    <h4>85%</h4>
+                    <p>Wellness Score</p>
+                </div>
+            </div>
+        </div>
+        <p style="color: #6b7280; text-align: center; margin-top: 20px; font-size: 12px;">All wellness check data is kept private and confidential.</p>
+    </div>
+    <!-- support cards -->
+    <div class="tab-content" id="tab3">
+        <div class="upper">
+            <h1>Peer Support Sessions</h1>
+            <button style="display: flex; justify-content: center; align-items: center; gap: 5px;"><img src="chatdarkgreen.png" style="width: 20px; height: 20px;"> Take New Quiz</button>
+        </div>
+        <div class="parts">
+            <!-- card1 -->
+            <div class="supportCard">
+                <div class="left">
+                    <div class="hr">
+                        <img src="help1.png">
+                        <div class="vr">
+                            <h1>Maya Patel</h1>
+                            <p>How are you feeling about your exams this week?</p>
+                            <p>Last message: 30/01/2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="text" style="background: oklch(.21 .034 264.665); color: oklch(.928 .006 264.531);"><h3>ended</h3></div>
+                </div>
+            </div>
+            <!-- card2 -->
+            <div class="supportCard">
+                <div class="left">
+                    <div class="hr">
+                        <img src="help1.png">
+                        <div class="vr">
+                            <h1>Maya Patel</h1>
+                            <p>How are you feeling about your exams this week?</p>
+                            <p>Last message: 30/01/2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="text" style="background: oklch(.379 .146 265.522); color: oklch(.882 .059 254.128);"><h3>active</h3></div>
+                    <button>Continue Chat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <!-- footer -->
+     <hr>
+     <footer>
+        <img src="logo.png" alt="logo">
+        <p>Supporting student well-being through community connection, peer support, and accessible mental health resources.</p>
+        <h6>© 2025 CampusCare. All rights reserved.</h6>
+     </footer>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+

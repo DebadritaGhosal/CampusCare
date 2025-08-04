@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCare</title>
+    <link rel="stylesheet" href="styleMarket.css">
+</head>
+<body>
+    <!-- header -->
+    <header>
+        <!-- logo -->
+        <div class="logo">
+            <img src="logo.png" alt="logo">
+        </div>
+        <!-- navbar -->
+        <div class="nav">
+            <h6><a href="Home.html">Home</a></h6>
+            <h6><a href="marketplace.html" class="active">Marketplace</a></h6>
+            <h6><a href="#">Mental Wellness</a></h6>
+            <h6><a href="#">Peer Support</a></h6>
+            <h6><a href="profile.html">Profile</a></h6>
+        </div>
+        <!-- buttons -->
+        <div class="btns1">
+            <button class="toggle-btn" id="theme" onclick="toggleTheme()"><span id="moonIcon">☾</span></button>
+            <button id="sign_in">Sign In</button>
+        </div>
+    </header>
+    <hr>
+    <!-- upper text -->
+     <div class="heading">
+        <h1>Campus Marketplace</h1>
+        <p>Find great deals on textbooks, electronics, and furniture from fellow students</p>
+     </div>
+    <!-- Search & Filter Section -->
+     <section class="search-filter-section">
+    <!-- Search Bar -->
+     <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search items...">
+        <button id="searchBtn">🔍</button>
+     </div>
+    <!-- Filter Options -->
+     <div class="filters">
+    <!-- Category Filter -->
+    <select id="categoryFilter">
+      <option value="">All Categories</option>
+      <option value="books">Books</option>
+      <option value="electronics">Electronics</option>
+      <option value="furniture">Furniture</option>
+      <option value="Lab Requirements">Lab Requirements</option>
+    </select>
+    <!-- Locations Filter -->
+     <select id="locationFilter">
+       <option value="">All Locations</option>
+       <option value="hostel-a">East Block</option>
+       <option value="hostel-b">West Block</option>
+       <option value="block-c">South Block</option>
+       <option value="block-c">North Block</option>
+     </select>
+    <!-- Price Range Filter -->
+     <select id="priceFilter">
+       <option value="">All Prices</option>
+       <option value="low">Under ₹500</option>
+       <option value="medium">₹500–₹2000</option>
+       <option value="high">Above ₹2000</option>
+    </select>
+        </div>
+    </section>
+    <!-- listings -->
+     <div class="imageContainer">
+        <!-- card1 -->
+        <div class="list_cotainer" id="set1">
+            <div class="topimg">
+                <img src="list1.png">
+            </div>
+            <div class="content">
+                <div class="parting">
+                    <h2>Advanced Calculus Textbook</h2>
+                    <h3>Rs.500/-</h3>
+                </div>
+                <p>Barely used calculus textbook for Math 201. All pages intact, no highlighting.</p>
+                <div class="parting">
+                    <p><a href="#">⚲ North Block</a></p>
+                    <h4>Like New</h4>
+                </div>
+                <div class="parting1">
+                    <h5>Seller:</h5>
+                    <h6>Alex Chen</h6>
+                </div>
+                <button>🗨Contact Seller</button>
+            </div>
+        </div>
+        <!-- card2 -->
+        <div class="list_cotainer" id="set2">
+            <div class="topimg">
+                <img src="list2.png">
+            </div>
+            <div class="content">
+                <div class="parting">
+                    <h2>MacBook Pro 13" (2020)</h2>
+                    <h3>Rs.20000/-</h3>
+                </div>
+                <p>Excellent condition MacBook Pro with 256GB storage. Perfect for students.</p>
+                <div class="parting">
+                    <p><a href="#">⚲ South Block</a></p>
+                    <h4>Excellent</h4>
+                </div>
+                <div class="parting1">
+                    <h5>Seller:</h5>
+                    <h6>Sarah Kim</h6>
+                </div>
+                <button>🗨Contact Seller</button>
+            </div>
+        </div>
+        <!-- card3 -->
+        <div class="list_cotainer" id="set3">
+            <div class="topimg">
+                <img src="list3.png">
+            </div>
+            <div class="content">
+                <div class="parting">
+                    <h2>Study Desk & Chair Set</h2>
+                    <h3>Rs.3500/-</h3>
+                </div>
+                <p>Comfortable study setup. Desk has drawers and the chair is ergonomic.</p>
+                <div class="parting">
+                    <p><a href="#">⚲ East Block</a></p>
+                    <h4>Good</h4>
+                </div>
+                <div class="parting1">
+                    <h5>Seller:</h5>
+                    <h6>Mike Johnson</h6>
+                </div>
+                <button>🗨Contact Seller</button>
+            </div>
+        </div>
+        <!-- card4 -->
+        <div class="list_cotainer" id="set4">
+            <div class="topimg">
+                <img src="list4.png">
+            </div>
+            <div class="content">
+                <div class="parting">
+                    <h2>Organic Chemistry Lab Kit</h2>
+                    <h3>Rs.900/-</h3>
+                </div>
+                <p>Complete lab kit with all necessary equipment for Chemistry 102.</p>
+                <div class="parting">
+                    <p><a href="#">⚲ West Block</a></p>
+                    <h4>Good</h4>
+                </div>
+                <div class="parting1">
+                    <h5>Seller:</h5>
+                    <h6>Emma Davis</h6>
+                </div>
+                <button>🗨Contact Seller</button>
+            </div>
+        </div>
+        <!-- card5 -->
+        <div class="list_cotainer" id="set5">
+            <div class="topimg">
+                <img src="list5.png">
+            </div>
+            <div class="content">
+                <div class="parting">
+                    <h2>Gaming Headset</h2>
+                    <h3>Rs.5000/-</h3>
+                </div>
+                <p>High-quality gaming headset with noise cancellation. Great for online classes too.</p>
+                <div class="parting">
+                    <p><a href="#">⚲ North Block</a></p>
+                    <h4>Very Good</h4>
+                </div>
+                <div class="parting1">
+                    <h5>Seller:</h5>
+                    <h6>Ryan Lee</h6>
+                </div>
+                <button>🗨Contact Seller</button>
+            </div>
+        </div>
+        <!-- card6 -->
+        <div class="list_cotainer" id="set6">
+            <div class="topimg">
+                <img src="list6.png">
+            </div>
+            <div class="content">
+                <div class="parting">
+                    <h2>Mini Refrigerator</h2>
+                    <h3>Rs.15000/-</h3>
+                </div>
+                <p>Perfect for dorm rooms. Energy efficient and quiet operation.</p>
+                <div class="parting">
+                    <p><a href="#">⚲ South Block</a></p>
+                    <h4>Like New</h4>
+                </div>
+                <div class="parting1">
+                    <h5>Seller:</h5>
+                    <h6>Lisa Wang</h6>
+                </div>
+                <button>🗨Contact Seller</button>
+            </div>
+        </div>
+    </div>
+    <button class="btn">More</button>
+
+
+
+
+    <!-- footer -->
+     <hr>
+     <footer>
+        <img src="logo.png" alt="logo">
+        <p>Supporting student well-being through community connection, peer support, and accessible mental health resources.</p>
+        <h6>© 2025 CampusCare. All rights reserved.</h6>
+     </footer>
+    <script src="script.js"></script>
+</body>
+</html>
