@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusCare | Sign Up</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="theme-toggle">
+    <button id="toggleTheme">☾</button>
+  </div>
+
+  <div class="logo">
+        <img src="logo.png" alt="logo">
+    <h1>CampusCare</h1>
+  </div>
+
+  <div class="form-card">
+    <h2>Sign Up</h2>
+    <p class="signup-message">Create your CampusCare account</p>
+
+    <form id="signupForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" placeholder="Full Name" required />
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="Email" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Password" required />
+
+      <button type="submit">Sign Up</button>
+    </form>
+
+    <p class="login-link">Already have an account? <a href="login.html">Log in</a></p>
+  </div>
+
+  <script>
+   function toggleTheme() {
+  const body = document.body;
+  const icon = document.getElementById("moonIcon");
+  body.classList.toggle("dark-mode");
+
+  // Save theme to localStorage
+  const theme = body.classList.contains("dark-mode") ? "dark" : "light";
+  localStorage.setItem("theme", theme);
+
+  // Toggle icon
+  icon.textContent = theme === "dark" ? "☀︎" : "☾";
+}
+
+// Load theme on page load
+window.onload = () => {
+  const savedTheme = localStorage.getItem("theme");
+  const icon = document.getElementById("moonIcon");
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    icon.textContent = "☀︎";
+  } else {
+    icon.textContent = "☾";
+  }
+};
+
+    // Redirect to personal details after signup (for demo)
+    document.getElementById("signupForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      window.location.href = "personal_details.html"; // Link to your next page
+    });
+  </script>
+</body>
+</html>

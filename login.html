@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusCare | LogIn</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="theme-toggle">
+    <button id="toggleTheme">☾</button>
+  </div>
+
+  <div class="logo">
+        <img src="logo.png" alt="logo">
+    <h1>CampusCare</h1>
+  </div>
+
+  <div class="container">
+    <form class="login-card" id="loginForm">
+      <h2>Log In</h2>
+      <p>Welcome back! Please enter your details.</p>
+
+      <label for="email" style=" color: #00757f;">Email address</label>
+      <input type="email" id="email" placeholder="Email address" required />
+
+      <label for="password" style=" color: #00757f;">Password</label>
+      <input type="password" id="password" placeholder="Password" required />
+
+      <div class="forgot">
+        <a href="#">Forgot password?</a>
+      </div>
+
+      <button type="submit">Log In</button>
+
+      <p class="signup" style="color: #333;">Don’t have an account? <a href="signup.html">Sign up</a></p>
+    </form>
+  </div>
+
+  <script>
+   function toggleTheme() {
+  const body = document.body;
+  const icon = document.getElementById("moonIcon");
+  body.classList.toggle("dark-mode");
+
+  // Save theme to localStorage
+  const theme = body.classList.contains("dark-mode") ? "dark" : "light";
+  localStorage.setItem("theme", theme);
+
+  // Toggle icon
+  icon.textContent = theme === "dark" ? "☀︎" : "☾";
+}
+
+// Load theme on page load
+window.onload = () => {
+  const savedTheme = localStorage.getItem("theme");
+  const icon = document.getElementById("moonIcon");
+
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    icon.textContent = "☀︎";
+  } else {
+    icon.textContent = "☾";
+  }
+};
+  </script>
+</body>
+</html>

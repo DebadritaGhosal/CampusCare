@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusCare | Personal Details</title>
+  <link rel="stylesheet" href="s.css"/>
+</head>
+<body>
+  <div class="theme-toggle">
+    <button id="toggleTheme">☾</button>
+  </div>
+  <div class="container">
+    <div class="logo">
+          <img src="logo.png" alt="logo">
+      <h1>CampusCare</h1>
+    </div>
+
+    <div class="form-card">
+      <h2>Personal Details</h2>
+      <form id="personalForm">
+        <label for="fullname">Full name</label>
+        <input type="text" id="fullname" name="fullname" placeholder="Alex Johnson" required />
+
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" placeholder="alex.johnson@example.edu" required />
+
+        <label for="dob">Date of birth</label>
+        <input type="text" id="dob" name="dob" placeholder="MM / DD / YYYY" required />
+        <div class="button-group">
+            <button type="submit">Save</button>
+            <button type="reset" onclick="logout()">Logout</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

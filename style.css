@@ -1,0 +1,173 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f1fafa;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  transition: background-color 0.3s ease;
+}
+
+body.dark {
+  background-color: #1e1e1e;
+  color: #f1fafa;
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.theme-toggle button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.logo img{
+    height: 250px;
+    width: 250px;
+}
+
+.logo h1 {
+  font-size: 28px;
+  color: #00757f;
+  margin: 0;
+}
+
+.container {
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  padding: 30px 25px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark .container {
+  background-color: #2c2c2c;
+}
+
+.login-card h2 {
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.login-card p {
+  font-size: 14px;
+  color: #00757f;
+  margin-bottom: 20px;
+}
+
+.login-card label {
+  display: block;
+  text-align: left;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 10px 18px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+body.dark .login-card input {
+  background-color: #444;
+  border: 1px solid #666;
+  color: #fff;
+}
+
+.forgot {
+  text-align: right;
+  font-size: 12px;
+  margin-bottom: 18px;
+}
+
+.forgot a {
+  color: #00757f;
+  text-decoration: none;
+}
+
+button[type="submit"] {
+  background-color: #00757f;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 12px rgba(0, 117, 127, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #005d66;
+}
+
+.signup {
+  font-size: 14px;
+  color: #444;
+}
+
+.signup a {
+  color: #00757f;
+  text-decoration: none;
+}
+
+@media (max-width: 480px) {
+  .container {
+    width: 90%;
+    padding: 25px 20px;
+  }
+
+  .logo h1 {
+    font-size: 24px;
+  }
+
+  .login-card h2 {
+    font-size: 22px;
+  }
+
+  .theme-toggle {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 80%;
+    max-width: 320px;
+    padding: 28px 22px;
+  }
+
+  .logo h1 {
+    font-size: 26px;
+  }
+
+  .login-card h2 {
+    font-size: 24px;
+  }
+}
