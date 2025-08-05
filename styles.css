@@ -24,7 +24,7 @@ body.dark {
 }
 
 .theme-toggle button {
-  background: none;
+  background: none;margin-right: 30px;
   border: none;
   font-size: 26px;
   cursor: pointer;
