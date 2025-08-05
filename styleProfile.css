@@ -104,10 +104,11 @@ header{
 #theme:hover{
     color: #34d399;
 }
-#sign_in{
+
+#sign_in{margin-top: 10px;
     background: #4ade80;
     color: #ffffff;
-    padding: 0px 10.5px;
+    padding: 5px 15px;
     border: none;
     border-radius: 10px;
     cursor: pointer;
