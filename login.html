@@ -35,8 +35,30 @@
       document.body.classList.toggle('dark');
       toggleBtn.textContent = document.body.classList.contains('dark') ? '☀︎' : '☾';
     });
+       try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
 
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        const result = await response.text();
+        if (response.ok) {
+          messageElement.style.color = 'green';
+          messageElement.textContent = result;
+          // Redirect to a dashboard or home page on success
+          // window.location.href = '/dashboard'; 
+        } else {
+          messageElement.style.color = 'red';
+          messageElement.textContent = result;
+        }
+      } catch (error) {
+        messageElement.style.color = 'red';
+        messageElement.textContent = 'An error occurred. Please try again.';
+      }
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
       // Normally login verification goes here
       alert("Logged in successfully!");
