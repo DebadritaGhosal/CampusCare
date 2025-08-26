@@ -42,14 +42,39 @@
       toggleBtn.textContent = document.body.classList.contains('dark') ? '☀︎' : '☾';
     });
 
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      localStorage.setItem('signupName', name);
-      localStorage.setItem('signupEmail', email);
-      window.location.href = 'personal_details.html';
+      document.getElementById('signupForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const messageElement = document.getElementById('message');
+
+        try {
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const result = await response.text();
+            if (response.ok) {
+                messageElement.style.color = 'green';
+                messageElement.textContent = result;
+                // Redirect to the personal details page after successful signup
+                setTimeout(() => {
+                    window.location.href = 'personal_details.html'; 
+                }, 2000); // 2-second delay for the user to read the success message
+            } else {
+                messageElement.style.color = 'red';
+                messageElement.textContent = result;
+            }
+        } catch (error) {
+            messageElement.style.color = 'red';
+            messageElement.textContent = 'An error occurred. Please try again.';
+        }
     });
+</script>
   </script>
 </body>
 </html>

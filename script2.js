@@ -10,7 +10,8 @@ function toggleTheme() {
     // Toggle icon
     icon.textContent = theme === "dark" ? "☀︎" : "☾";
   }
-  
+document.getElementById('profileLink').addEventListener('click', function() {
+});
   // Load theme on page load
   window.onload = () => {
     const savedTheme = localStorage.getItem("theme");
@@ -23,7 +24,12 @@ function toggleTheme() {
       icon.textContent = "☾";
     }
   };
-  
+window.onload = function() {
+  const userEmail = localStorage.getItem('userEmail');
+  if (userEmail) {
+    document.getElementById('profileEmail').textContent = userEmail;
+  }
+};  
   // listings
   const imageContainerElement = document.querySelector('.imageContainer');
   const btn = document.querySelector('.btn');
