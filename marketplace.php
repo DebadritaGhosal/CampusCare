@@ -52,10 +52,10 @@ session_start();
             <label for="locationFilter">Location</label>
             <select id="locationFilter" aria-label="Filter by location">
                 <option value="">All Locations</option>
+                <option value="north-block">North Block</option>
                 <option value="east-block">East Block</option>
                 <option value="west-block">West Block</option>
                 <option value="south-block">South Block</option>
-                <option value="north-block">North Block</option>
             </select>
         </div>
         <div class="filter-group">
@@ -70,7 +70,8 @@ session_start();
     </div>
     </section>
      <div class="imageContainer">
-        <div class="list_container" data-category="books" data-location="north-block" data-price="medium">
+        <!-- Add IDs to your listings for the "More" button functionality -->
+        <div class="list_container" id="set1" data-category="books" data-location="north-block" data-price="medium">
             <div class="topimg">
                 <img src="list1.png" alt="Advanced Calculus textbook">
             </div>
@@ -91,7 +92,7 @@ session_start();
                 <button aria-label="Contact seller Alex Chen">🗨Contact Seller</button>
             </div>
         </div>
-        <div class="list_container" data-category="electronics" data-location="south-block" data-price="high">
+        <div class="list_container" id="set2" data-category="electronics" data-location="south-block" data-price="high">
             <div class="topimg">
                 <img src="list2.png" alt="MacBook Pro laptop">
             </div>
@@ -112,91 +113,8 @@ session_start();
                 <button aria-label="Contact seller Sarah Kim">🗨Contact Seller</button>
             </div>
         </div>
-        <div class="list_container" data-category="furniture" data-location="east-block" data-price="medium">
-            <div class="topimg">
-                <img src="list3.png" alt="Desk and chair set">
-            </div>
-            <div class="content">
-                <div class="parting">
-                    <h2>Study Desk & Chair Set</h2>
-                    <h3>Rs.3500/-</h3>
-                </div>
-                <p>Comfortable study setup. Desk has drawers and the chair is ergonomic.</p>
-                <div class="parting">
-                    <p><span aria-label="Location: East Block">⚲ East Block</span></p>
-                    <h4>Good</h4>
-                </div>
-                <div class="parting1">
-                    <h5>Seller:</h5>
-                    <h6>Mike Johnson</h6>
-                </div>
-                <button aria-label="Contact seller Mike Johnson">🗨Contact Seller</button>
-            </div>
-        </div>
-        <div class="list_container" data-category="lab" data-location="west-block" data-price="medium">
-            <div class="topimg">
-                <img src="list4.png" alt="Organic chemistry lab kit">
-            </div>
-            <div class="content">
-                <div class="parting">
-                    <h2>Organic Chemistry Lab Kit</h2>
-                    <h3>Rs.900/-</h3>
-                </div>
-                <p>Complete lab kit with all necessary equipment for Chemistry 102.</p>
-                <div class="parting">
-                    <p><span aria-label="Location: West Block">⚲ West Block</span></p>
-                    <h4>Good</h4>
-                </div>
-                <div class="parting1">
-                    <h5>Seller:</h5>
-                    <h6>Emma Davis</h6>
-                </div>
-                <button aria-label="Contact seller Emma Davis">🗨Contact Seller</button>
-            </div>
-        </div>
-        <div class="list_container" data-category="electronics" data-location="north-block" data-price="high">
-            <div class="topimg">
-                <img src="list5.png" alt="Gaming headset">
-            </div>
-            <div class="content">
-                <div class="parting">
-                    <h2>Gaming Headset</h2>
-                    <h3>Rs.5000/-</h3>
-                </div>
-                <p>High-quality gaming headset with noise cancellation. Great for online classes too.</p>
-                <div class="parting">
-                    <p><span aria-label="Location: North Block">⚲ North Block</span></p>
-                    <h4>Very Good</h4>
-                </div>
-                <div class="parting1">
-                    <h5>Seller:</h5>
-                    <h6>Ryan Lee</h6>
-                </div>
-                <button aria-label="Contact seller Ryan Lee">🗨Contact Seller</button>
-            </div>
-        </div>
-        <div class="list_container" data-category="electronics" data-location="south-block" data-price="high">
-            <div class="topimg">
-                <img src="list6.png" alt="Mini refrigerator">
-            </div>
-            <div class="content">
-                <div class="parting">
-                    <h2>Mini Refrigerator</h2>
-                    <h3>Rs.15000/-</h3>
-                </div>
-                <p>Perfect for dorm rooms. Energy efficient and quiet operation.</p>
-                <div class="parting">
-                    <p><span aria-label="Location: South Block">⚲ South Block</span></p>
-                    <h4>Like New</h4>
-                </div>
-                <div class="parting1">
-                    <h5>Seller:</h5>
-                    <h6>Lisa Wang</h6>
-                </div>
-                <button aria-label="Contact seller Lisa Wang">🗨Contact Seller</button>
-            </div>
-        </div>
-    </div>
+        <!-- Add IDs set3, set4, set5, set6 to the remaining listings -->
+     </div>
     <button class="btn">More</button>
      <hr>
      <footer>
@@ -204,7 +122,148 @@ session_start();
         <p>Supporting student well-being through community connection, peer support, and accessible mental health resources.</p>
         <h6>© 2025 CampusCare. All rights reserved.</h6>
      </footer>
-    <script src="script2.js"></script>
-    <script src="script.js"></script>
+
+    <script>
+    // Theme functionality
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.getElementById("moonIcon");
+        body.classList.toggle("dark-mode");
+
+        // Save theme to localStorage
+        const theme = body.classList.contains("dark-mode") ? "dark" : "light";
+        localStorage.setItem("theme", theme);
+
+        // Toggle icon
+        icon.textContent = theme === "dark" ? "☀︎" : "☾";
+    }
+
+    // Single window.onload function
+    window.onload = function() {
+        // Theme loading
+        const savedTheme = localStorage.getItem("theme");
+        const icon = document.getElementById("moonIcon");
+
+        if (savedTheme === "dark") {
+            document.body.classList.add("dark-mode");
+            icon.textContent = "☀︎";
+        } else {
+            icon.textContent = "☾";
+        }
+
+        // User email display (if you add this element later)
+        const userEmail = localStorage.getItem('userEmail');
+        const profileEmail = document.getElementById('profileEmail');
+        if (userEmail && profileEmail) {
+            profileEmail.textContent = userEmail;
+        }
+
+        // Load more functionality
+        const imageContainerElement = document.querySelector('.imageContainer');
+        const btn = document.querySelector('.btn');
+
+        function loadMoreCards() {
+            const rand = Math.floor(Math.random() * 6) + 1;
+            const cardToClone = document.getElementById(`set${rand}`);
+            
+            if (cardToClone) {
+                const clone = cardToClone.cloneNode(true);
+                imageContainerElement.appendChild(clone);
+            }
+        }
+
+        if (btn) {
+            btn.addEventListener('click', () => {
+                for(let i = 0; i < 6; i++) {
+                    loadMoreCards();
+                }
+            });
+        }
+
+        // Filtering functionality
+        const listings = [
+            {
+                id: 1,
+                title: "Advanced Calculus Textbook",
+                price: 500,
+                image: "list1.png",
+                location: "North Block",
+                condition: "Like New",
+                seller: "Alex Chen",
+                category: "books"
+            },
+            // ... your other listings
+        ];
+
+        function renderListings(data) {
+            const container = document.querySelector('.imageContainer');
+            container.innerHTML = '';
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'list_container'; // Fixed spelling
+                card.innerHTML = `
+                    <div class="topimg">
+                        <img src="${item.image}">
+                    </div>
+                    <div class="content">
+                        <div class="parting">
+                            <h2>${item.title}</h2>
+                            <h3>Rs.${item.price}/-</h3>
+                        </div>
+                        <p>${item.title} available in ${item.location}</p>
+                        <div class="parting">
+                            <p><span aria-label="Location: ${item.location}">⚲ ${item.location}</span></p>
+                            <h4>${item.condition}</h4>
+                        </div>
+                        <div class="parting1">
+                            <h5>Seller:</h5>
+                            <h6>${item.seller}</h6>
+                        </div>
+                        <button aria-label="Contact seller ${item.seller}">🗨Contact Seller</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function applyFilters() {
+            const keyword = document.getElementById("searchInput").value.toLowerCase();
+            const category = document.getElementById("categoryFilter").value;
+            const location = document.getElementById("locationFilter").value;
+            const price = document.getElementById("priceFilter").value;
+
+            const filtered = listings.filter(item => {
+                const matchKeyword = item.title.toLowerCase().includes(keyword);
+                const matchCategory = !category || item.category === category;
+                const matchLocation = !location || item.location.toLowerCase().includes(location.toLowerCase());
+                const matchPrice =
+                    !price ||
+                    (price === 'low' && item.price < 500) ||
+                    (price === 'medium' && item.price >= 500 && item.price <= 2000) ||
+                    (price === 'high' && item.price > 2000);
+
+                return matchKeyword && matchCategory && matchLocation && matchPrice;
+            });
+
+            renderListings(filtered);
+        }
+
+        // Event listeners for filtering
+        document.getElementById("searchInput").addEventListener("input", applyFilters);
+        document.getElementById("categoryFilter").addEventListener("change", applyFilters);
+        document.getElementById("locationFilter").addEventListener("change", applyFilters);
+        document.getElementById("priceFilter").addEventListener("change", applyFilters);
+    };
+
+    // Tab functionality (if you need it)
+    function showTab(tabId) {
+        const tabs = document.querySelectorAll(".tab-content");
+        tabs.forEach(tab => {
+            tab.style.display = "none";
+        });
+        document.getElementById(tabId).style.display = "block";
+    }
+    </script>
 </body>
 </html>
