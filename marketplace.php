@@ -205,5 +205,6 @@ session_start();
         <h6>© 2025 CampusCare. All rights reserved.</h6>
      </footer>
     <script src="script2.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
