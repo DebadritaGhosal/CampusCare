@@ -15,11 +15,11 @@ session_start();
             <img src="logo.png" alt="CampusCare Logo">
         </div>
         <nav class="nav">
-            <a href="Home.html">Home</a>
+            <a href="Home.php">Home</a>
             <a href="marketplace.php" class="active">Marketplace</a>
-            <a href="wellness.html">Mental Wellness</a>
+            <a href="wellness.php">Mental Wellness</a>
             <a href="#">Peer Support</a>
-            <a href="profile.html">Profile</a>
+            <a href="profile.php">Profile</a>
         </nav>
         <div class="btns1">
             <button class="toggle-btn" id="theme" onclick="toggleTheme()"><span id="moonIcon">☾</span></button>

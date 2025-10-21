@@ -15,10 +15,10 @@ session_start();
             <img src="logo.png" alt="CampusCare Logo">
         </div>
         <nav class="nav">
-            <a href="home.php" class="active">Home</a>
+            <a href="Home.php" class="active">Home</a>
             <a href="marketplace.php">Marketplace</a>
             <a href="wellness.php">Mental Wellness</a>
-            <a href="peer-support.php">Peer Support</a>
+            <a href="#">Peer Support</a>
             <a href="profile.php">Profile</a>
         </nav>
         <div class="btns1">

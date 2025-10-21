@@ -129,10 +129,10 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'tab1';
             <img src="logo.png" alt="CampusCare Logo">
         </div>
         <nav class="nav">
-            <a href="home.php">Home</a>
+            <a href="Home.php">Home</a>
             <a href="marketplace.php">Marketplace</a>
             <a href="wellness.php">Mental Wellness</a>
-            <a href="peer_support.php">Peer Support</a>
+            <a href="#">Peer Support</a>
             <a href="profile.php" class="active">Profile</a>
         </nav>
         <div class="btns1">
