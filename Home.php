@@ -40,7 +40,7 @@ session_start();
     </div>
     <div class="btns2">
         <a href="marketplace.php" class="btn-contained primary">
-            <img src="shopping_bag_white.png" alt="Shopping bag icon">Get Started
+            <img src="shopping_bah_white.png" alt="Shopping bag icon">Get Started
         </a>
         <a href="wellness.php" class="btn-contained secondary">
             <img src="heart_green.png" alt="Heart icon">Check Mental Wellness
