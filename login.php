@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = 'Please enter a valid email address.';
         $message_type = 'error';
     } else {
-        if ($email === 'test@example.com' && $password === 'password123') {
+        if ($email == 'test@example.com' && $password == 'password123') {
             $_SESSION['user_email'] = $email;
             header('Location: dashboard.php');
             exit;
@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<!DOCTYPE html>
+<!DOCTYPE html>]
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="password">Password</label>
         <input type="password" id="password" name="password" placeholder="Password" required />
         <button type="submit">Log In</button>
-        <p class="signup">Don't have an account? <a href="signup.html">Sign up</a></p>
+        <p class="signup">Don't have an account? <a href="signup.">Sign up</a></p>
       </form>
       <?php if ($message): ?>
         <div id="message" class="<?php echo htmlspecialchars($message_type); ?>">

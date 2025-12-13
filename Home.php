@@ -39,10 +39,21 @@ session_start();
          support. Connect, trade, and thrive in your student community.</p>
     </div>
     <div class="btns2">
-        <a href="marketplace.php" class="btn-contained primary">
+        <a href="marketplace.php" class="btn-contained primary" style="color: #fff;background-color: #63d18bff;justify-content: space-evenly;
+    align-items: center;
+    text-decoration: none;size: 18px;
+    width: 40%;padding-top: 20px;
+    padding-bottom: 20px; border-radius: 8px;padding-left: 20px;
+    padding-right: 20px;
+    display: flex;">
             <img src="shopping_bah_white.png" alt="Shopping bag icon">Get Started
         </a>
-        <a href="wellness.php" class="btn-contained secondary">
+        <a href="wellness.php" class="btn-contained secondary" style="color: #fff;background-color: #bccec3ff;justify-content: space-evenly;
+    align-items: center;
+    text-decoration: none;border-radius: 8px;padding-left: 20px;
+    padding-right: 20px;
+    width: 45%;padding-top: 19px;
+    padding-bottom: 19px;display: flex;">
             <img src="heart_green.png" alt="Heart icon">Check Mental Wellness
         </a>
     </div>

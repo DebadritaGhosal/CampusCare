@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['temp_user'] = [
             'name' => $name,
             'email' => $email,
-            'password_hash' => $hashed_password
+            'password' => $password
         ];
         header('Location: personal_details.php');
         exit();

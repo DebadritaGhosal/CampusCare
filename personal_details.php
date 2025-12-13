@@ -24,16 +24,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'phone' => $phone,
             'college' => $college
         ];
-        $user_data = array_merge($_SESSION['temp_user'], $_SESSION['personal_details']);
-        unset($_SESSION['temp_user']);
-        unset($_SESSION['personal_details']);
-        $message = 'Personal details submitted successfully!';
-        $message_type = 'success';
-        header('Refresh: 2; URL=home.php');
-        echo '<div style="text-align:center;padding:20px;">Personal details submitted successfully! Redirecting to home page...</div>';
-        exit;
+               $user_data = array_merge($_SESSION['temp_user'], $_SESSION['personal_details']);
+-        unset($_SESSION['temp_user']);
+-        unset($_SESSION['personal_details']);
+-        $message = 'Personal details submitted successfully!';
+-        $message_type = 'success';
+-        header('Refresh: 2; URL=login.php');
+-        echo '<div style="text-align:center;padding:20px;">Personal details submitted successfully! Redirecting to home page...</div>';
+-        exit;
++        // Persist the new user (adjust table/columns/DSN as needed)
++        try {
++            $pdo = new PDO('mysql:host=127.0.0.1;dbname=signup_details;charset=utf8mb4', 'root', '');
++            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
++            // Assume temp_user contained 'email' and 'password'
++            $passwordHash = password_hash($user_data['password'], PASSWORD_DEFAULT);
++            $stmt = $pdo->prepare('INSERT INTO users (email, password_hash, dob, gender, phone, college) VALUES (?, ?, ?, ?, ?, ?)');
++            $stmt->execute([
++                $user_data['email'],
++                $passwordHash,
++                $user_data['dob'],
++                $user_data['gender'],
++                $user_data['phone'],
++                $user_data['college']
++            ]);
++            unset($_SESSION['temp_user']);
++            unset($_SESSION['personal_details']);
++            // Redirect immediately after successful insert
++            header('Location: login.php');
++            exit;
++        } catch (PDOException $e) {
++            $message = 'Database error: could not create account.';
++            $message_type = 'error';
     }
-}
+}}
 ?>
 <!DOCTYPE html>
 <html lang="en">
