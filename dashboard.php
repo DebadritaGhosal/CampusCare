@@ -1,11 +1,11 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_email'])) {
+if (!isset($_SESSION['email'])) {
     header('Location: signup.php');
     exit();
 }
-$user_email = $_SESSION['user_email'] ?? 'User';
-$user_name = $_SESSION['user_name'] ?? 'Student';
+$email = $_SESSION['email'] ?? 'User';
+$name = $_SESSION['name'] ?? 'Student';
 ?>
 <!DOCTYPE html>
 <html lang="en">
