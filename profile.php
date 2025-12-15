@@ -10,8 +10,9 @@ try {
     $pdo = new PDO('mysql:host=127.0.0.1;dbname=campuscare;charset=utf8mb4', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
-    // Fetch user data
-    $stmt = $pdo->prepare('SELECT * FROM signup_details WHERE id = ?');
+    // NOTE: use the same table name you insert into. changed to signup_details (no underscore)
+    $stmt = $pdo->prepare('SELECT * FROM signup_details
+     WHERE id = ?');
     $stmt->execute([$_SESSION['user_id']]);
     $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
     
@@ -23,7 +24,7 @@ try {
     }
     
     // Format join date
-    $join_date = date('n/j/Y', strtotime($user_data['join_date'] ?? 'now'));
+    $joined_date = date('n/j/Y', strtotime($user_data['joined_date'] ?? 'now'));
     
     // Prepare user data for display
     $display_data = [
@@ -31,7 +32,7 @@ try {
         'email' => $user_data['email'],
         'year' => $user_data['year'] ?? 'Student',
         'major' => $user_data['major'] ?? 'Undeclared',
-        'join_date' => $join_date,
+        'joined_date' => $joined_date,
         'profile_pic' => $user_data['profile_pic'] ?? 'dp.png',
         'college' => $user_data['college'] ?? 'University',
         'phone' => $user_data['phone'] ?? '',
@@ -129,7 +130,18 @@ $support_sessions = [
         'status_bg' => 'oklch(.379 .146 265.522)',
         'status_color' => 'oklch(.882 .059 254.128)',
         'active' => true
+    ],
+     [
+        'mentor_image' => 'help1.png',
+        'mentor_name' => 'Mayabono Bihariniini',
+        'last_message' => 'How are you feeling about your exams this week?',
+        'last_date' => date('d/m/Y', strtotime('-5 days')),
+        'status' => 'active',
+        'status_bg' => 'oklch(.379 .146 265.522)',
+        'status_color' => 'oklch(.882 .059 254.128)',
+        'active' => true
     ]
+    
 ];
 
 $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'tab1';
@@ -175,7 +187,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'tab1';
     </header>
     
     <div class="info">
-        <img src="<?php echo htmlspecialchars($display_data['profile_pic']); ?>" alt="Profile picture">
+        <img src="uploads/alan.jpg" alt="Profile picture">
         <div class="part">
             <div class="vrPart">
                 <h1><?php echo htmlspecialchars($display_data['name']); ?></h1>
@@ -197,7 +209,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'tab1';
             </div>
             <div class="hrPart">
                 <h2><?php echo htmlspecialchars($display_data['year']); ?> • <?php echo htmlspecialchars($display_data['major']); ?></h2>
-                <h2>Member since <?php echo htmlspecialchars($display_data['join_date']); ?></h2>
+                <!--<h2>Member since <?php //echo htmlspecialchars($display_data['joined_date ']); ?></h2>-->
             </div>
         </div>
         <div class="btn">

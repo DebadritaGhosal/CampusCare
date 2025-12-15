@@ -6,11 +6,11 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Connect to database
-$pdo = new PDO('mysql:host=127.0.0.1;dbname=signup_details;charset=utf8mb4', 'root', '');
+$pdo = new PDO('mysql:host=127.0.0.1;dbname=campuscare;charset=utf8mb4', 'root', '');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 // Fetch current user data
-$stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+$stmt = $pdo->prepare('SELECT * FROM signup_details WHERE id = ?');
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $college = $_POST['college'] ?? $user['college'];
     
     // Update user in database
-    $update_stmt = $pdo->prepare('UPDATE users SET name = ?, year = ?, major = ?, phone = ?, college = ? WHERE id = ?');
+    $update_stmt = $pdo->prepare('UPDATE signup_details SET name = ?, year = ?, major = ?,  phone = ?, college = ? WHERE id = ?');
     if ($update_stmt->execute([$name, $year, $major, $phone, $college, $_SESSION['user_id']])) {
         $message = 'Profile updated successfully!';
         $message_type = 'success';

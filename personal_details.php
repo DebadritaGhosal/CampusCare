@@ -37,10 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $passwordHash = password_hash($user_data['password'], PASSWORD_DEFAULT);
             
             // Create table if it doesn't exist
-            $tableExists = $pdo->query("SHOW TABLES LIKE 'signupdetails'")->rowCount() > 0;
+            $tableExists = $pdo->query("SHOW TABLES LIKE 'signup_details'")->rowCount() > 0;
             
             if (!$tableExists) {
-                $pdo->exec("CREATE TABLE signupdetails (
+                $pdo->exec("CREATE TABLE signup_details (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     email VARCHAR(255) UNIQUE NOT NULL,
                     password VARCHAR(255) NOT NULL,
@@ -49,20 +49,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     gender VARCHAR(20),
                     phone VARCHAR(20),
                     college VARCHAR(255),
-                    join_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )");
             }
             
             // Check if email exists
-            $checkStmt = $pdo->prepare('SELECT id FROM signupdetails WHERE email = ?');
+            $checkStmt = $pdo->prepare('SELECT id FROM signup_details WHERE email = ?');
             $checkStmt->execute([$user_data['email']]);
             
             if ($checkStmt->fetch()) {
                 $message = 'Email already exists. Please use a different email.';
                 $message_type = 'error';
             } else {
-                // Insert into signupdetails table
-                $stmt = $pdo->prepare('INSERT INTO signupdetails (email, password, name, dob, gender, phone, college, join_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())');
+                // Insert into signup_details table
+                $stmt = $pdo->prepare('INSERT INTO signup_details (email, password, name, dob, gender, phone, college, joined_date) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())');
                 
                 $stmt->execute([
                     $user_data['email'],

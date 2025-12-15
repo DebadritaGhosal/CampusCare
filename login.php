@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo = new PDO('mysql:host=127.0.0.1;dbname=campuscare;charset=utf8mb4', 'root', '');
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            // FIXED: Changed from 'users' to 'signupdetails'
-            $stmt = $pdo->prepare('SELECT * FROM signupdetails WHERE email = ?');
+            // FIXED: Changed from 'users' to 'signup_details'
+            $stmt = $pdo->prepare('SELECT * FROM signup_details WHERE email = ?');
             $stmt->execute([$email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
