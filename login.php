@@ -15,18 +15,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo = new PDO('mysql:host=127.0.0.1;dbname=campuscare;charset=utf8mb4', 'root', '');
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            // FIXED: Changed from 'users' to 'signup_details'
+            // Query users table instead of signup_details
             $stmt = $pdo->prepare('SELECT * FROM signup_details WHERE email = ?');
             $stmt->execute([$email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if ($user && password_verify($password, $user['password'])) {
+                // Update last login
+                $updateStmt = $pdo->prepare('UPDATE signup_details SET last_login = NOW() WHERE id = ?');
+                $updateStmt->execute([$user['id']]);
+                
                 // Set session variables
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['email'] = $user['email'];
-                $_SESSION['name'] = $user['name'] ?? 'User';
+                $_SESSION['name'] = $user['name'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['profile_pic'] = $user['profile_pic'];
                 
-                header('Location: profile.php');
+                // Create profile picture from first letter
+                if (empty($user['profile_pic'])) {
+                    $firstLetter = strtoupper(substr($user['name'], 0, 1));
+                    $_SESSION['profile_initials'] = $firstLetter;
+                }
+                
+                // Redirect based on role
+                switch ($user['role']) {
+                    case 'admin':
+                        header('Location: admin_dashboard.php');
+                        break;
+                    case 'mentor':
+                        header('Location: mentor_dashboard.php');
+                        break;
+                    case 'student':
+                        header('Location: student_dashboard.php');
+                        break;
+                    default:
+                        header('Location: profile.php');
+                }
                 exit;
             } else {
                 $message = 'Invalid email or password.';

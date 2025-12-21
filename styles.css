@@ -15,7 +15,79 @@ body.dark {
   background-color: #1e1e1e;
   color: #f1fafa;
 }
+/* Profile picture styles */
+.profile-picture {
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid;
+    transition: transform 0.3s ease;
+}
 
+.profile-picture:hover {
+    transform: scale(1.05);
+}
+
+.profile-picture-small {
+    width: 40px;
+    height: 40px;
+    border-width: 2px;
+}
+
+.profile-picture-medium {
+    width: 60px;
+    height: 60px;
+    border-width: 3px;
+}
+
+.profile-picture-large {
+    width: 100px;
+    height: 100px;
+    border-width: 4px;
+}
+
+/* Role-based border colors */
+.profile-picture.student {
+    border-color: #7209b7;
+}
+
+.profile-picture.mentor {
+    border-color: #4361ee;
+}
+
+.profile-picture.admin {
+    border-color: #2E8B57;
+}
+
+/* Profile picture upload widget */
+.upload-widget {
+    position: relative;
+    display: inline-block;
+}
+
+.upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    cursor: pointer;
+}
+
+.upload-widget:hover .upload-overlay {
+    opacity: 1;
+}
+
+.upload-icon {
+    color: white;
+    font-size: 24px;
+}
 /* Theme Toggle */
 .theme-toggle {
   position: absolute;

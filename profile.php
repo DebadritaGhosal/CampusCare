@@ -181,7 +181,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'tab1';
                 <span id="moonIcon">☾</span>
             </button>
             <a href="logout.php">
-                <button id="sign_in">Sign Out</button>
+                <button id="sign_in">Log Out</button>
             </a>
         </div>
     </header>

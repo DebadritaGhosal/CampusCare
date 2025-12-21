@@ -29,13 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         
         try {
-            // FIXED: Changed 'signup_details' to 'campuscare'
             $pdo = new PDO('mysql:host=127.0.0.1;dbname=campuscare;charset=utf8mb4', 'root', '');
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
-            // Hash the password
             $passwordHash = password_hash($user_data['password'], PASSWORD_DEFAULT);
-            
             // Create table if it doesn't exist
             $tableExists = $pdo->query("SHOW TABLES LIKE 'signup_details'")->rowCount() > 0;
             
@@ -82,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 unset($_SESSION['temp_user']);
                 
-                header('Location: profile.php');
+                header('Location: login.php');
                 exit;
             }
             

@@ -58,8 +58,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="container">
-        <h1>Edit Profile</h1>
-        <a href="profile.php" style="color: #2E8B57; text-decoration: none;">← Back to Profile</a>
+        <div class="profile-header">
+            <?php if ($user['profile_pic'] && file_exists($user['profile_pic'])): ?>
+                <img src="<?php echo htmlspecialchars($user['profile_pic']); ?>" 
+                     alt="Profile Picture" 
+                     class="profile-pic">
+            <?php else: ?>
+                <div class="initials-circle">
+                    <?php echo strtoupper(substr($user['name'], 0, 1)); ?>
+                </div>
+            <?php endif; ?>
+            <div>
+                <h1>Edit Profile</h1>
+                <p>Update your personal information</p>
+                <a href="upload_profile_pic.php" style="color: #2E8B57; font-size: 14px;">
+                    Change Profile Picture
+                </a>
+            </div>
+        </div>
         
         <?php if ($message): ?>
             <div class="message <?php echo $message_type; ?>">

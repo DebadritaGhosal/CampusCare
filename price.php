@@ -5,6 +5,34 @@ require_once 'config/database.php';
 $isLoggedIn = isset($_SESSION['user_id']);
 $user_id = $isLoggedIn ? $_SESSION['user_id'] : null;
 
+// PHP helper functions
+function getSuggestedPriceRange($asking_price) {
+    if (!$asking_price) return ['min' => 0, 'max' => 0];
+    
+    $min = $asking_price * 0.5;  // 50% of asking price
+    $max = $asking_price * 1.2;  // 120% of asking price
+    
+    return [
+        'min' => round($min, 2),
+        'max' => round($max, 2),
+        'suggested_min' => round($asking_price * 0.7, 2),
+        'suggested_max' => round($asking_price * 0.9, 2)
+    ];
+}
+
+function checkForNewBids($product_id, $last_check, $current_user_id) {
+    global $pdo;
+    $stmt = $pdo->prepare(
+        "SELECT COUNT(*) as new_bids 
+         FROM proposals 
+         WHERE product_id = ? 
+         AND created_at > ? 
+         AND buyer_id != ?"
+    );
+    $stmt->execute([$product_id, $last_check, $current_user_id]);
+    return $stmt->fetch()['new_bids'];
+}
+
 // Fetch products
 try {
     $stmt = $pdo->query("SELECT * FROM products WHERE status IN ('available', 'negotiating') ORDER BY created_at DESC");
@@ -243,6 +271,71 @@ try {
             margin-left: auto;
             border-bottom-right-radius: 0;
         }
+        
+        /* New bidding features styles */
+        .smart-suggestion {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .auto-bid {
+            margin: 15px 0;
+            padding: 15px;
+            background: #e8f4f8;
+            border-radius: 8px;
+            border: 1px solid #b8daff;
+        }
+        
+        .smart-slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .bid-graph-container {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .live-bidding-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .bid-notification {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 15px;
+            display: none;
+            max-width: 300px;
+        }
+        
+        .bidding-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .best-offer {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2E8B57;
+        }
+        
+        .time-left {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #dc3545;
+        }
     </style>
 </head>
 <body>
@@ -294,6 +387,15 @@ try {
         </div>
     </div>
     
+    <!-- Live Bidding Notification -->
+    <div class="live-bidding-panel" id="liveBiddingPanel">
+        <div class="bid-notification" id="bidNotification">
+            <h4 style="margin: 0 0 10px 0;">🎯 Live Bidding Update</h4>
+            <p id="bidMessage" style="margin: 0 0 10px 0;"></p>
+            <button class="btn" onclick="refreshBidding()" style="padding: 5px 10px; font-size: 12px;">Refresh</button>
+        </div>
+    </div>
+    
     <div class="heading">
         <h1>🛵 Campus Marketplace - Suggest Your Price</h1>
         <p>See an item you like? Suggest your price! Sellers can accept, reject, or make a counter-offer.</p>
@@ -313,6 +415,28 @@ try {
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM proposals WHERE product_id = ? AND status IN ('pending', 'countered')");
             $stmt->execute([$product['id']]);
             $proposalCount = $stmt->fetchColumn();
+            
+            // Get best offer
+            $stmt = $pdo->prepare(
+                "SELECT MAX(proposed_price) as best_offer 
+                 FROM proposals 
+                 WHERE product_id = ? AND status = 'pending'"
+            );
+            $stmt->execute([$product['id']]);
+            $best_offer = $stmt->fetch()['best_offer'];
+            
+            // Calculate time until proposal expires
+            $stmt = $pdo->prepare(
+                "SELECT TIMESTAMPDIFF(HOUR, NOW(), expires_at) as hours_left 
+                 FROM proposals 
+                 WHERE product_id = ? AND status = 'pending' 
+                 ORDER BY expires_at ASC LIMIT 1"
+            );
+            $stmt->execute([$product['id']]);
+            $time_left = $stmt->fetch()['hours_left'];
+            
+            // Get suggested price range
+            $range = getSuggestedPriceRange($product['asking_price'] ?? 0);
         ?>
         <div class="list_container" data-id="<?php echo $product['id']; ?>">
             <div class="topimg">
@@ -331,6 +455,38 @@ try {
                     <?php endif; ?>
                 </div>
                 <p><?php echo htmlspecialchars($product['description']); ?></p>
+                
+                <!-- Advanced Bidding Features -->
+                <?php if($product['bidding_enabled']): ?>
+                <div class="bidding-info">
+                    <div style="flex: 1;">
+                        <div style="font-size: 0.9em; color: #666;">Current best offer:</div>
+                        <div class="best-offer" id="bestOffer_<?php echo $product['id']; ?>">
+                            <?php echo $best_offer ? '₹' . number_format($best_offer, 2) : 'No offers yet'; ?>
+                        </div>
+                    </div>
+                    <div style="margin-left: 20px;">
+                        <div style="font-size: 0.9em; color: #666;">Time left:</div>
+                        <div class="time-left" id="timeLeft_<?php echo $product['id']; ?>">
+                            <?php echo $time_left > 0 ? $time_left . 'h' : '48h'; ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bidding History Graph -->
+                <div class="bid-graph-container" id="bidGraph_<?php echo $product['id']; ?>">
+                    <h5 style="margin: 0 0 10px 0;">📈 Bidding History</h5>
+                    <div style="height: 60px; position: relative; border-left: 1px solid #ddd; border-bottom: 1px solid #ddd;">
+                        <!-- Bidding points will be drawn here -->
+                    </div>
+                    <button class="btn" onclick="toggleBidGraph(<?php echo $product['id']; ?>)" style="padding: 5px 10px; font-size: 12px; margin-top: 10px;">
+                        Hide Graph
+                    </button>
+                </div>
+                <button class="btn" onclick="toggleBidGraph(<?php echo $product['id']; ?>)" style="padding: 5px 10px; font-size: 12px;">
+                    Show Bidding Graph
+                </button>
+                <?php endif; ?>
                 
                 <!-- Indrive-style Price Proposal Section -->
                 <?php if($product['bidding_enabled'] && $product['seller_id'] != $user_id): ?>
@@ -383,6 +539,69 @@ try {
                     </div>
                     <?php endif; ?>
                 </div>
+                
+                <!-- Smart Price Suggestion -->
+                <?php if($range['min'] > 0): ?>
+                <div class="smart-suggestion">
+                    <h4 style="margin: 0 0 10px 0; color: #856404;">💡 Smart Price Suggestion</h4>
+                    <p style="margin: 0 0 10px 0;">Based on bidding history and similar items:</p>
+                    
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                        <input type="range" 
+                               min="<?php echo $range['min']; ?>" 
+                               max="<?php echo $range['max']; ?>" 
+                               value="<?php echo $range['suggested_min']; ?>"
+                               class="smart-slider"
+                               id="smartSlider_<?php echo $product['id']; ?>"
+                               oninput="updateSmartPrice(this, <?php echo $product['id']; ?>)">
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9em;">
+                        <span style="color: #dc3545;">Low: ₹<?php echo number_format($range['min'], 2); ?></span>
+                        <span style="color: #28a745; font-weight: bold;">
+                            Suggested: ₹<span id="smartPrice_<?php echo $product['id']; ?>">
+                                <?php echo number_format($range['suggested_min'], 2); ?>
+                            </span>
+                        </span>
+                        <span style="color: #dc3545;">High: ₹<?php echo number_format($range['max'], 2); ?></span>
+                    </div>
+                    <p style="font-size: 0.8em; color: #856404; margin-top: 10px;">
+                        💡 Tip: Bids in the suggested range have 70% higher chance of acceptance
+                    </p>
+                </div>
+                <?php endif; ?>
+                
+                <!-- Auto-Bid Feature -->
+                <?php if($isLoggedIn): ?>
+                <div class="auto-bid">
+                    <h4 style="margin: 0 0 10px 0; color: #004085;">🤖 Auto-Bid</h4>
+                    <p style="margin: 0 0 10px 0;">Set your maximum price and let the system bid for you:</p>
+                    
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <div style="flex: 1;">
+                            <input type="number" 
+                                   id="autoBidMax_<?php echo $product['id']; ?>"
+                                   placeholder="Your maximum bid"
+                                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="number" 
+                                   id="autoBidIncrement_<?php echo $product['id']; ?>"
+                                   placeholder="Increment (e.g., 50)"
+                                   value="50"
+                                   style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        </div>
+                        <button class="btn" onclick="setAutoBid(<?php echo $product['id']; ?>)" style="background: #004085; color: white;">
+                            Enable Auto-Bid
+                        </button>
+                    </div>
+                    
+                    <p style="font-size: 0.8em; color: #004085; margin-top: 10px;">
+                        ⚡ Auto-bid will increase your bid automatically when outbid, up to your maximum
+                    </p>
+                </div>
+                <?php endif; ?>
+                
                 <?php endif; ?>
                 
                 <div class="parting">
@@ -415,6 +634,8 @@ try {
     <script>
     // Global variables
     let currentProductId = null;
+    let lastBidCheck = {};
+    let bidCheckInterval = null;
     
     // Open proposal modal
     function openProposalModal(productId) {
@@ -610,6 +831,173 @@ try {
             });
     }
     
+    // Real-time bidding functions
+    function startBidMonitoring(productId) {
+        lastBidCheck[productId] = new Date().toISOString();
+        
+        if (!bidCheckInterval) {
+            bidCheckInterval = setInterval(() => {
+                Object.keys(lastBidCheck).forEach(productId => {
+                    checkNewBids(productId);
+                });
+            }, 30000); // Check every 30 seconds
+        }
+    }
+    
+    function checkNewBids(productId) {
+        fetch(`check_new_bids.php?product_id=${productId}&last_check=${lastBidCheck[productId]}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.new_bids > 0) {
+                    showBidNotification(productId, data.new_bids, data.latest_price);
+                    lastBidCheck[productId] = new Date().toISOString();
+                    
+                    // Update best offer display
+                    document.getElementById(`bestOffer_${productId}`).textContent = 
+                        '₹' + data.latest_price.toLocaleString();
+                }
+            });
+    }
+    
+    function showBidNotification(productId, count, latestPrice) {
+        const notification = document.getElementById('bidNotification');
+        const message = document.getElementById('bidMessage');
+        
+        message.textContent = `🚨 ${count} new bid${count > 1 ? 's' : ''} on this item! 
+                               Latest offer: ₹${latestPrice.toLocaleString()}`;
+        notification.style.display = 'block';
+        
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 10000);
+    }
+    
+    function refreshBidding() {
+        // Refresh all visible product bidding info
+        document.querySelectorAll('.list_container').forEach(item => {
+            const productId = item.dataset.id;
+            if (productId) {
+                checkNewBids(productId);
+            }
+        });
+        document.getElementById('bidNotification').style.display = 'none';
+    }
+    
+    function updateSmartPrice(slider, productId) {
+        const price = slider.value;
+        document.getElementById(`smartPrice_${productId}`).textContent = 
+            parseFloat(price).toLocaleString('en-IN', {minimumFractionDigits: 2});
+    }
+    
+    function setAutoBid(productId) {
+        const maxBid = document.getElementById(`autoBidMax_${productId}`).value;
+        const increment = document.getElementById(`autoBidIncrement_${productId}`).value;
+        
+        if (!maxBid || !increment) {
+            alert('Please enter both maximum bid and increment amount');
+            return;
+        }
+        
+        fetch('set_auto_bid.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                max_bid: maxBid,
+                increment: increment
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Auto-bid enabled! The system will bid for you automatically.');
+            } else {
+                alert('Error: ' + data.message);
+            }
+        });
+    }
+    
+    function toggleBidGraph(productId) {
+        const graph = document.getElementById(`bidGraph_${productId}`);
+        if (graph.style.display === 'none') {
+            graph.style.display = 'block';
+            loadBidGraph(productId);
+        } else {
+            graph.style.display = 'none';
+        }
+    }
+    
+    function loadBidGraph(productId) {
+        fetch(`get_bid_history.php?product_id=${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                drawBidGraph(productId, data);
+            });
+    }
+    
+    function drawBidGraph(productId, data) {
+        const container = document.querySelector(`#bidGraph_${productId} > div`);
+        container.innerHTML = '';
+        
+        if (data.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #666;">No bidding history yet</p>';
+            return;
+        }
+        
+        // Create SVG for graph
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '100%');
+        svg.setAttribute('height', '60');
+        svg.style.overflow = 'visible';
+        
+        // Calculate min and max prices
+        const prices = data.map(bid => bid.price);
+        const minPrice = Math.min(...prices);
+        const maxPrice = Math.max(...prices);
+        const priceRange = maxPrice - minPrice;
+        
+        // Draw bidding points
+        data.forEach((bid, index) => {
+            const x = (index / (data.length - 1)) * 100;
+            const y = 60 - ((bid.price - minPrice) / priceRange * 50);
+            
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', x + '%');
+            circle.setAttribute('cy', y);
+            circle.setAttribute('r', '3');
+            circle.setAttribute('fill', bid.status === 'accepted' ? '#28a745' : 
+                                          bid.status === 'pending' ? '#007bff' : '#dc3545');
+            svg.appendChild(circle);
+            
+            // Add price label for first, last, and highest points
+            if (index === 0 || index === data.length - 1 || bid.price === maxPrice) {
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', x + '%');
+                text.setAttribute('y', y - 5);
+                text.setAttribute('font-size', '8');
+                text.setAttribute('fill', '#666');
+                text.textContent = '₹' + Math.round(bid.price);
+                svg.appendChild(text);
+            }
+        });
+        
+        container.appendChild(svg);
+    }
+    
+    // Contact seller function
+    function contactSeller(sellerName) {
+        alert(`Opening chat with ${sellerName}...`);
+        // Implement chat functionality here
+    }
+    
+    function loadMoreItems() {
+        alert('Loading more items...');
+        // Implement load more functionality
+    }
+    
     // Initialize on load
     window.onload = function() {
         // Theme loading
@@ -627,6 +1015,14 @@ try {
         setInterval(updateNotificationCount, 30000); // Update every 30 seconds
         <?php endif; ?>
         
+        // Start bidding monitoring for all visible products
+        document.querySelectorAll('.list_container').forEach(item => {
+            const productId = item.dataset.id;
+            if (productId) {
+                startBidMonitoring(productId);
+            }
+        });
+        
         // Close modals on ESC key
         document.addEventListener('keydown', function(e) {
             if(e.key === 'Escape') {
@@ -635,12 +1031,6 @@ try {
             }
         });
     };
-    
-    // Contact seller function
-    function contactSeller(sellerName) {
-        alert(`Opening chat with ${sellerName}...`);
-        // Implement chat functionality here
-    }
     </script>
 </body>
 </html>
