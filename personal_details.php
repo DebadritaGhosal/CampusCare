@@ -31,7 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $pdo = new PDO('mysql:host=127.0.0.1;dbname=campuscare;charset=utf8mb4', 'root', '');
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $passwordHash = password_hash($user_data['password'], PASSWORD_DEFAULT);
+            // Only hash if the password is plain text (not already hashed)
+$passwordHash = $_SESSION['temp_user']['password'];
             // Create table if it doesn't exist
             $tableExists = $pdo->query("SHOW TABLES LIKE 'signup_details'")->rowCount() > 0;
             
@@ -86,7 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = 'Database error: ' . $e->getMessage();
             $message_type = 'error';
         }
-    }
+    }// After successful database insert
+unset($_SESSION['temp_user']);
+
 }
 ?>
 <!DOCTYPE html>
@@ -103,12 +106,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </style>
 </head>
 <body>
-  <div class="theme-toggle">
-    <button id="toggleTheme">☾</button>
-  </div>
-  <div class="container">
+   <div class="container">
     <div class="login-box">
       <h1>Personal Details</h1>
+       <div class="theme-toggle">
+    <button id="toggleTheme">☾</button>
+  </div>
       <p>Please fill out your details</p>
       <form id="detailsForm" method="post" action="">
         <label for="dob">Date of Birth</label>

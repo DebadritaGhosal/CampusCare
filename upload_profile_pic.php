@@ -238,6 +238,7 @@ function resizeImage($file, $w, $h) {
             cursor: pointer;
             font-size: 16px;
             width: 100%;
+            margin-bottom: 20px;
             transition: background 0.3s;
         }
         
@@ -350,7 +351,7 @@ function resizeImage($file, $w, $h) {
             </div>
             
             <button type="submit" class="btn" id="submitBtn">Upload Picture</button>
-            <a href="dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            <a href="dashboard.php" class="btn btn-secondary" style="text-decoration: none;">Back to Dashboard</a>
         </form>
     </div>
     

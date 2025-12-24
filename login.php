@@ -15,15 +15,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo = new PDO('mysql:host=127.0.0.1;dbname=campuscare;charset=utf8mb4', 'root', '');
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
-            // Query users table instead of signup_details
+            // Query users table
             $stmt = $pdo->prepare('SELECT * FROM signup_details WHERE email = ?');
             $stmt->execute([$email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             
             if ($user && password_verify($password, $user['password'])) {
                 // Update last login
-                $updateStmt = $pdo->prepare('UPDATE signup_details SET last_login = NOW() WHERE id = ?');
-                $updateStmt->execute([$user['id']]);
+                try {
+                    $updateStmt = $pdo->prepare('UPDATE signup_details SET last_login = NOW() WHERE id = ?');
+                    $updateStmt->execute([$user['id']]);
+                } catch (Exception $e) {
+                    // Silently continue even if update fails
+                    error_log("Failed to update last_login: " . $e->getMessage());
+                }
                 
                 // Set session variables
                 $_SESSION['user_id'] = $user['id'];
@@ -101,20 +106,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </div>
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('toggleTheme');
     toggleBtn.addEventListener('click', () => {
       document.body.classList.toggle('dark');
       toggleBtn.textContent = document.body.classList.contains('dark') ? '☀︎' : '☾';
       localStorage.setItem('campuscare_theme', document.body.classList.contains('dark') ? 'dark' : 'light');
     });
-    document.addEventListener('DOMContentLoaded', () => {
-      const saved = localStorage.getItem('campuscare_theme');
-      if (saved === 'dark') {
-        document.body.classList.add('dark');
-        toggleBtn.textContent = '☀︎';
-      } else {
-        toggleBtn.textContent = '☾';
-      }
+    const toggleBtn = document.getElementById('toggleTheme');
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('light');
+      toggleBtn.textContent = document.body.classList.contains('light') ? '☀︎' : '☾';
+
+    });
     });
   </script>
 </body>
