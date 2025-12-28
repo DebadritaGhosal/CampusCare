@@ -1,5 +1,35 @@
 <?php
 session_start();
+require_once 'includes/db_connect.php';
+
+try {
+    $stmt = $pdo->prepare(
+        "SELECT m.*, s.name AS seller_name
+         FROM marketplace m
+         LEFT JOIN signup_details s ON m.user_id = s.id
+         WHERE m.status = 'active'
+         ORDER BY m.posted_date DESC"
+    );
+    $stmt->execute();
+    $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Marketplace fetch error: " . $e->getMessage());
+    $items = [];
+}
+
+// Map DB rows to the structure expected by the JS renderer
+$items_js = array_map(function($it) {
+    return [
+        'id' => (int)($it['id'] ?? 0),
+        'title' => $it['title'] ?? '',
+        'price' => isset($it['price']) ? (float)$it['price'] : 0,
+        'image' => $it['image'] ?? 'default_item.png',
+        'location' => $it['Location'] ?? '',      // may be empty if not stored in marketplace
+        'condition' => $it['Condition'] ?? '',
+        'seller' => $it['seller_name'] ?? '',
+        'category' => $it['category'] ?? ''
+    ];
+}, $items);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,52 +99,7 @@ session_start();
         </div>
     </div>
     </section>
-     <div class="imageContainer">
-        <!-- Add IDs to your listings for the "More" button functionality -->
-        <div class="list_container" id="set1" data-category="books" data-location="north-block" data-price="medium">
-            <div class="topimg">
-                <img src="list1.png" alt="Advanced Calculus textbook">
-            </div>
-            <div class="content">
-                <div class="parting">
-                    <h2>Advanced Calculus Textbook</h2>
-                    <h3>Rs.500/-</h3>
-                </div>
-                <p>Barely used calculus textbook for Math 201. All pages intact, no highlighting.</p>
-                <div class="parting">
-                    <p><span aria-label="Location: North Block">⚲ North Block</span></p>
-                    <h4>Like New</h4>
-                </div>
-                <div class="parting1">
-                    <h5>Seller:</h5>
-                    <h6>Alex Chen</h6>
-                </div>
-                <button aria-label="Contact seller Alex Chen">🗨Contact Seller</button>
-            </div>
-        </div>
-        <div class="list_container" id="set2" data-category="electronics" data-location="south-block" data-price="high">
-            <div class="topimg">
-                <img src="list2.png" alt="MacBook Pro laptop">
-            </div>
-            <div class="content">
-                <div class="parting">
-                    <h2>MacBook Pro 13" (2020)</h2>
-                    <h3>Rs.20000/-</h3>
-                </div>
-                <p>Excellent condition MacBook Pro with 256GB storage. Perfect for students.</p>
-                <div class="parting">
-                    <p><span aria-label="Location: South Block">⚲ South Block</span></p>
-                    <h4>Excellent</h4>
-                </div>
-                <div class="parting1">
-                    <h5>Seller:</h5>
-                    <h6>Sarah Kim</h6>
-                </div>
-                <button aria-label="Contact seller Sarah Kim">🗨Contact Seller</button>
-            </div>
-        </div>
-        <!-- Add IDs set3, set4, set5, set6 to the remaining listings -->
-     </div>
+    <div class="imageContainer"></div>
     <button class="btn">More</button>
      <hr>
      <footer>
@@ -180,20 +165,8 @@ session_start();
             });
         }
 
-        // Filtering functionality
-        const listings = [
-            {
-                id: 1,
-                title: "Advanced Calculus Textbook",
-                price: 500,
-                image: "list1.png",
-                location: "North Block",
-                condition: "Like New",
-                seller: "Alex Chen",
-                category: "books"
-            },
-            // ... your other listings
-        ];
+        // Use server-side data instead of hardcoded listings
+        const listings = <?php echo json_encode($items_js, JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT); ?>;
 
         function renderListings(data) {
             const container = document.querySelector('.imageContainer');
@@ -201,10 +174,10 @@ session_start();
 
             data.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'list_container'; // Fixed spelling
+                card.className = 'list_container';
                 card.innerHTML = `
                     <div class="topimg">
-                        <img src="${item.image}">
+                        <img src="${item.image}" alt="${item.title}">
                     </div>
                     <div class="content">
                         <div class="parting">
@@ -226,6 +199,9 @@ session_start();
                 container.appendChild(card);
             });
         }
+
+        // initialize UI with server data
+        renderListings(listings);
 
         function applyFilters() {
             const keyword = document.getElementById("searchInput").value.toLowerCase();

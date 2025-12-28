@@ -69,6 +69,36 @@ $listings = $listings ?? [];
 $wellness_history = $wellness_history ?? [];
 $support_sessions = $support_sessions ?? [];
 $active_tab = $active_tab ?? 'tab1';
+
+try {
+    $stmt = $pdo->prepare("SELECT id, title, price, image, posted_date FROM marketplace WHERE user_id = ? ORDER BY posted_date DESC");
+    $stmt->execute([$_SESSION['user_id']]);
+    $listings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Fetch listings error: " . $e->getMessage());
+    $listings = [];
+}
+
+try {
+    $stmt = $pdo->prepare("SELECT score, status, check_date AS date FROM wellness_checks WHERE user_id = ? ORDER BY check_date DESC LIMIT 10");
+    $stmt->execute([$_SESSION['user_id']]);
+    $wellness_history = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Fetch wellness history error: " . $e->getMessage());
+    $wellness_history = [];
+}
+
+try {
+    $stmt = $pdo->prepare("SELECT id, mentor_name, last_message, last_date FROM support_sessions WHERE user_id = ? ORDER BY last_date DESC LIMIT 10");
+    $stmt->execute([$_SESSION['user_id']]);
+    $support_sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Fetch support sessions error: " . $e->getMessage());
+    $support_sessions = [];
+}
+
+// determine active tab (allow ?tab=tab2 etc.)
+$active_tab = isset($_GET['tab']) && in_array($_GET['tab'], ['tab1','tab2','tab3']) ? $_GET['tab'] : 'tab1';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -166,6 +196,19 @@ body.light .action-btn {
     color: #111;
 }
 
+/* Marketplace-like listing styles (match marketplace.php) */
+.listings-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:20px; }
+.list_container { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,0.08); display:flex; flex-direction:column; }
+.list_container .topimg { height:160px; background:#f6f6f6; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.list_container .topimg img { width:100%; height:100%; object-fit:cover; }
+.list_container .content { padding:12px 14px; display:flex; flex-direction:column; gap:8px; }
+.list_container .parting { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.list_container h2 { font-size:16px; margin:0; color:#0b4f3a; }
+.list_container h3 { font-size:14px; color:#059668; margin:0; }
+.list_container p { margin:0; color:#555; font-size:13px; }
+.list_container .parting1 { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.contact-btn { background:#059668; color:#fff; border:none; padding:8px 10px; border-radius:8px; text-decoration:none; font-size:13px; }
+
 .upper { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
 .upper h1{font-size:22px;}
 .upper button { background:#34d399; color:#064e3b; border:none; border-radius:10px; padding:7px 12px; font-size:13px; cursor:pointer; }
@@ -237,18 +280,40 @@ body.light .action-btn {
         <div class="tab-content <?php echo $active_tab=='tab1'?'active':''; ?>" id="tab1">
             <div class="upper">
                 <h1>My Marketplace Listings</h1>
-                <button onclick="window.location.href='marketplace.php?action=add'">+ Add New Listing</button>
+                
+                <button onclick="window.location.href='add_items.php'">+ Add New Listing</button>
             </div>
             <div class="parts">
                 <?php if(empty($listings)): ?>
                     <p style="text-align:center; padding:40px;">No listings yet. <a href="marketplace.php?action=add">Add your first item!</a></p>
                 <?php else: ?>
+                    <div class="listings-grid">
                     <?php foreach($listings as $listing): ?>
-                    <div class="card">
-                        <h4><?php echo htmlspecialchars($listing['title']); ?></h4>
-                        <p>Price: <?php echo htmlspecialchars($listing['price']); ?></p>
-                    </div>
+                        <div class="list_container" id="prod_<?php echo (int)$listing['id']; ?>">
+                            <div class="topimg">
+                                <img src="<?php echo htmlspecialchars($listing['image'] ?? 'default_item.png'); ?>" alt="<?php echo htmlspecialchars($listing['title']); ?>">
+                            </div>
+                            <div class="content">
+                                <div class="parting">
+                                    <h2><?php echo htmlspecialchars($listing['title']); ?></h2>
+                                    <h3>Rs.<?php echo number_format((float)($listing['price'] ?? 0), 2); ?>/-</h3>
+                                </div>
+                                <p><?php echo htmlspecialchars($listing['title']); ?> available</p>
+                                <div class="parting">
+                                    <p><span>📍 <?php echo htmlspecialchars($listing['location'] ?? ''); ?></span></p>
+                                    <h4><?php echo htmlspecialchars($listing['condition'] ?? ''); ?></h4>
+                                </div>
+                                <div class="parting1">
+                                    <div>
+                                        <h5>Seller:</h5>
+                                        <h6><?php echo htmlspecialchars($listing['seller'] ?? $_SESSION['name']); ?></h6>
+                                    </div>
+                                    <a class="contact-btn" href="getproduct_info.php?id=<?php echo (int)$listing['id']; ?>">🗨 Contact</a>
+                                </div>
+                            </div>
+                        </div>
                     <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
