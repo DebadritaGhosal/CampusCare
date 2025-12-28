@@ -174,6 +174,40 @@ body { background:#f5f5f5; color:#333; line-height:1.6; }
     color: #fff;
     transform: scale(1.1);
 }
+.theme-toggle {
+    cursor: pointer;
+    font-size: 20px;
+    padding: 8px 12px;
+    border-radius: 50%;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+/* Light mode toggle */
+body.light .theme-toggle {
+    background: #e0e0e0;
+    color: #111;
+}
+
+/* Dark mode toggle */
+body:not(.light) .theme-toggle {
+    background: #182642;
+    color: #e5e7eb;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+/* Hover effects */
+body:not(.light) .theme-toggle:hover {
+    background: #1f3555;
+    transform: scale(1.15);
+}
+
+body.light .theme-toggle:hover {
+    background: #059668c2;
+    color: #fff;
+}
+
+
 
 /* --- LIGHT THEME --- */
 body.light {
@@ -196,6 +230,137 @@ body.light .action-btn {
     color: #111;
 }
 
+/* Dark-mode sidebar override */
+body:not(.light) .sidebar {
+    background: rgba(0, 0, 0, 0.1) !important;
+}
+body:not(.light) {
+    background: rgb(15, 23, 42) !important;
+}
+
+body:not(.light) .main-content{
+    background: rgb(15, 23, 42) !important;
+}
+
+/* --- DARK MODE CARD BACKGROUND OVERRIDE --- */
+body:not(.light) .card,
+body:not(.light) .profile-header,
+body:not(.light) .action-btn,
+body:not(.light) .list_container {
+    background: #182642 !important;
+    color: #e5e7eb;
+}
+
+/* Text color fixes inside cards */
+body:not(.light) .card p,
+body:not(.light) .card h4,
+body:not(.light) .card h5,
+body:not(.light) .card h6,
+body:not(.light) .list_container h2,
+body:not(.light) .list_container h3,
+body:not(.light) .list_container p {
+    color: #e5e7eb;
+}
+
+/* --- TAB BUTTONS : DARK MODE FIX --- */
+body:not(.light) .tab-buttons {
+    background: #0f1e33;
+    border: 1px solid #1f3555;
+}
+
+body:not(.light) .tab-buttons button {
+    color: #cbd5e1;
+}
+
+/* Hover state */
+body:not(.light) .tab-buttons button:hover {
+    background: #1f3555;
+    color: #ffffff;
+}
+
+/* Active tab */
+body:not(.light) .tab-buttons button.active {
+    background: #182642;
+    color: #ffffff;
+    box-shadow: inset 0 0 0 1px #34d399;
+}
+body:not(.light) .tab-buttons button:not(:last-child) {
+    border-right: 1px solid #1f3555;
+}
+
+/* ===============================
+   DARK MODE TEXT COLOR FIX
+   =============================== */
+body:not(.light) {
+    color: #e5e7eb; /* primary text */
+}
+
+/* Headings */
+body:not(.light) h1,
+body:not(.light) h2,
+body:not(.light) h3,
+body:not(.light) h4,
+body:not(.light) h5,
+body:not(.light) h6 {
+    color: #f8fafc;
+}
+
+/* Paragraphs, spans, small text */
+body:not(.light) p,
+body:not(.light) span,
+body:not(.light) li,
+body:not(.light) small {
+    color: #cbd5e1;
+}
+
+/* Links */
+body:not(.light) a {
+    color: #34d399;
+}
+
+body:not(.light) a:hover {
+    color: #6ee7b7;
+}
+
+/* Sidebar text */
+body:not(.light) .sidebar h2,
+body:not(.light) .sidebar a {
+    color: #f1f5f9;
+}
+
+/* Cards & containers */
+body:not(.light) .card,
+body:not(.light) .profile-header,
+body:not(.light) .action-btn,
+body:not(.light) .list_container {
+    color: #e5e7eb;
+}
+
+/* Muted / secondary text */
+body:not(.light) .muted,
+body:not(.light) .list_container p {
+    color: #94a3b8;
+}
+
+/* Buttons text */
+body:not(.light) button {
+    color: #e5e7eb;
+}
+
+/* Remove button special case */
+body:not(.light) .remove-btn {
+    color: #fca5a5;
+    border-color: #f87171;
+}
+
+body:not(.light) .remove-btn:hover {
+    color: #ffffff;
+}
+
+
+
+
+
 /* Marketplace-like listing styles (match marketplace.php) */
 .listings-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:20px; }
 .list_container { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 6px 18px rgba(0,0,0,0.08); display:flex; flex-direction:column; }
@@ -212,6 +377,22 @@ body.light .action-btn {
 .upper { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
 .upper h1{font-size:22px;}
 .upper button { background:#34d399; color:#064e3b; border:none; border-radius:10px; padding:7px 12px; font-size:13px; cursor:pointer; }
+
+/* add styles for remove button */
+.remove-btn {
+    background:transparent;
+    border:1px solid #dc2626;
+    color:#dc2626;
+    padding:6px 8px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:13px;
+}
+.remove-btn:hover {
+    background:#dc2626;
+    color:#fff;
+}
+
 </style>
 </head>
 <body>
@@ -221,6 +402,9 @@ body.light .action-btn {
         <h2>Student Portal</h2>
         <nav>
             <ul>
+                <li><a href="Home.php">Home</a></li>
+                <li><a href="marketplace.php">Marketplace</a></li>
+                <li><a href="wellness.php">Mental Wellness</a></li>
                 <li><a href="student_dashboard.php">Dashboard</a></li>
                 <li><a href="student_profile.php">My Profile</a></li>
                 <li><a href="student_mentor.php">My Mentor</a></li>
@@ -308,7 +492,10 @@ body.light .action-btn {
                                         <h5>Seller:</h5>
                                         <h6><?php echo htmlspecialchars($listing['seller'] ?? $_SESSION['name']); ?></h6>
                                     </div>
-                                    <a class="contact-btn" href="getproduct_info.php?id=<?php echo (int)$listing['id']; ?>">🗨 Contact</a>
+                                    <form method="post" action="remove_listing.php" style="display:inline;" onsubmit="return confirm('Delete this listing permanently?');">
+                                        <input type="hidden" name="id" value="<?php echo (int)$listing['id']; ?>">
+                                        <button type="submit" class="remove-btn">🗑 Remove</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -321,7 +508,7 @@ body.light .action-btn {
         <div class="tab-content <?php echo $active_tab=='tab2'?'active':''; ?>" id="tab2">
             <div class="upper">
                 <h1>Wellness Check History</h1>
-                <a href="wellness.php"><button>♡ Take New Quiz</button></a>
+                <button onclick="window.location.href='wellness.php'">♡ Take New Quiz</button>
             </div>
             <div class="parts">
                 <?php foreach($wellness_history as $wellness): ?>
@@ -352,31 +539,35 @@ body.light .action-btn {
 
 <script>
      document.addEventListener("DOMContentLoaded", () => {
-// TAB FUNCTION
-const toggleBtn = document.getElementById('toggleTheme');
+    // TAB FUNCTION
+    const toggleBtn = document.getElementById('toggleTheme');
     toggleBtn.addEventListener('click', () => {
       document.body.classList.toggle('light');
       toggleBtn.textContent = document.body.classList.contains('light') ? '☀︎' : '☾';
-
     });
-function showTab(tabId){
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.tab-buttons button').forEach(b => b.classList.remove('active'));
 
-    const tab = document.getElementById(tabId);
-    tab.classList.add('active');
-    document.querySelector(`.tab-buttons button[onclick="showTab('${tabId}')"]`).classList.add('active');
+    function showTab(tabId){
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-buttons button').forEach(b => b.classList.remove('active'));
 
-    // Animate cards
-    const cards = tab.querySelectorAll('.parts > *');
-    cards.forEach(card => {
-        card.style.opacity = 0;
-        card.style.transform = 'translateY(20px)';
-        void card.offsetWidth;
-        card.style.opacity = 1;
-        card.style.transform = 'translateY(0)';
-    });
-}});
+        const tab = document.getElementById(tabId);
+        tab.classList.add('active');
+        document.querySelector(`.tab-buttons button[onclick="showTab('${tabId}')"]`).classList.add('active');
+
+        // Animate cards
+        const cards = tab.querySelectorAll('.parts > *');
+        cards.forEach(card => {
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(20px)';
+            void card.offsetWidth;
+            card.style.opacity = 1;
+            card.style.transform = 'translateY(0)';
+        });
+    }
+
+    // Make showTab available to inline onclick handlers
+    window.showTab = showTab;
+});
 </script>
 </body>
 </html>

@@ -104,6 +104,14 @@ body.dark .container label {
   margin-bottom: 5px;
   font-size: 14px;
 }
+body.dark .container input,
+body.dark .container textarea,
+body.dark .container select {
+  background-color: #444;
+  color: #fff;
+  border: 1px solid #666;
+}
+
     
     
     /* Header */

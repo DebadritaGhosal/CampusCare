@@ -19,6 +19,7 @@ session_start();
             <a href="marketplace.php">Marketplace</a>
             <a href="wellness.php">Mental Wellness</a>
             <a href="#">Peer Support</a>
+            <a href="profile.php">Profile</a>
 
         </nav>
         <div class="btns1">
