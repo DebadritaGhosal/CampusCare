@@ -98,20 +98,167 @@ unset($_SESSION['temp_user']);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Personal Details</title>
-  <link rel="stylesheet" href="s.css">
   <style>
     #message { margin-top: 12px; font-size: 14px; }
     #message.success { color: green; }
     #message.error { color: red; }
+  .login-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  }
+
+/* Circular toggle button */
+.theme-toggle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.05);
+  color: #333;
+  font-size: 16px;
+  cursor: pointer;
+  position: static !important;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease, transform 0.15s ease, color 0.25s ease;
+}
+
+.theme-toggle:hover {
+  background: rgba(0,0,0,0.12);
+  transform: scale(1.08);
+}
+
+.theme-toggle:active {
+  transform: scale(0.96);
+}
+
+/* Dark mode style */
+body.dark .theme-toggle {
+  background: rgba(255,255,255,0.08);
+  color: #eee;
+}
+
+body.dark .theme-toggle:hover {
+  background: rgba(255,255,255,0.18);
+}
+/* personal-details.css */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f0faff;
+  color: #111;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark {
+  background-color: #1e1e1e;
+  color: #f1fafa;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-box {
+  background-color: #fff;
+  padding: 30px 32px;
+  position: relative;
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+  width: 340px;
+  transition: background-color 0.3s ease;
+}
+
+body.dark .login-box {
+  background-color: #2c2c2c;
+}
+
+.login-box h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #00757f;
+}
+
+.login-box p {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  text-align: left;
+}
+
+form input,
+form select {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: #f9f9f9;
+}
+
+body.dark form input,
+body.dark form select {
+  background-color: #444;
+  border: 1px solid #666;
+  color: #fff;
+}
+
+form button {
+  background-color: #00757f;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #005d66;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .login-box {
+    width: 90%;
+    padding: 24px 20px;
+  }
+
+  .login-box h1 {
+    font-size: 20px;
+  }
+
+  form button {
+    font-size: 15px;
+  }
+}
   </style>
 </head>
 <body>
    <div class="container">
     <div class="login-box">
-      <h1>Personal Details</h1>
-       <div class="theme-toggle">
-    <button id="toggleTheme">☾</button>
-  </div>
+      <div class="login-header">
+  <h1>Personal Details</h1>
+  <button id="toggleTheme" class="theme-toggle">☾</button>
+</div>
       <p>Please fill out your details</p>
       <form id="detailsForm" method="post" action="">
         <label for="dob">Date of Birth</label>
