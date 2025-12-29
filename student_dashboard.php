@@ -357,6 +357,24 @@ body:not(.light) .remove-btn:hover {
     color: #ffffff;
 }
 
+/* Profile action links */
+.profile-link {
+    text-decoration: none;
+    color: #074933;
+    font-weight: 500;
+}
+
+/* Dark mode override */
+body:not(.light) .profile-link {
+    color: #ffffff;
+}
+
+/* Hover effect */
+.profile-link:hover {
+    text-decoration: underline;
+}
+
+
 
 
 
@@ -411,6 +429,7 @@ body:not(.light) .remove-btn:hover {
                 <li><a href="student_resources.php">Resources</a></li>
                 <li><a href="student_appointments.php">Appointments</a></li>
                 <li><a href="logout.php">Logout</a></li>
+                <li><a href="delete_account.php" style="color: #ff6b6b;">Delete Account</a></li>
             </ul>
         </nav>
     </div>
@@ -433,8 +452,8 @@ body:not(.light) .remove-btn:hover {
                 <h1>Welcome, <?php echo htmlspecialchars($_SESSION['name']); ?></h1>
                 <p><?php echo ucfirst($_SESSION['role']); ?> Dashboard</p>
                 <div class="theme-toggle" id="toggleTheme">☾</div>
-                <li><a href="upload_profile_pic.php" style="text-decoration:none;color:#074933ff;">📷 Change Profile Picture</a></li>
-                <li><a href="edit_profile.php" style="text-decoration:none;color:#074933ff;">✏️ Edit Profile</a></li>
+                <li>📷<a href="upload_profile_pic.php">Change Profile Picture</a></li>
+                <li>✏️<a href="edit_profile.php">Edit Profile</a></li>
             </div>
         </div>
 
