@@ -42,22 +42,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $firstLetter = strtoupper(substr($user['name'], 0, 1));
                     $_SESSION['profile_initials'] = $firstLetter;
                 }
-                
+                $_SESSION['role'] = strtolower(trim($user['role']));
                 // Redirect based on role
-                switch ($user['role']) {
-                    case 'admin':
-                        header('Location: admin_dashboard.php');
-                        break;
-                    case 'mentor':
-                        header('Location: mentor_dashboard.php');
-                        break;
-                    case 'student':
-                        header('Location: student_dashboard.php');
-                        break;
-                    default:
-                        header('Location: profile.php');
-                }
-                exit;
+                switch ($_SESSION['role']) {
+    case 'admin':
+        header('Location: admin_dashboard.php');
+        break;
+
+    case 'mentor':
+        header('Location: mentor_dashboard.php');
+        break;
+
+    case 'student':
+        header('Location: student_dashboard.php');
+        break;
+
+    default:
+        header('Location: profile.php');
+}
+exit;
+
             } else {
                 $message = 'Invalid email or password.';
                 $message_type = 'error';

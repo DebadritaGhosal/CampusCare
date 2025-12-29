@@ -1,7 +1,8 @@
 <?php
-session_start();
 require_once 'includes/auth_check.php';
 require_once 'includes/db_connect.php';
+session_start();
+var_dump($_SESSION['role']);
 
 // Only mentors can access this page
 if ($_SESSION['role'] !== 'mentor') {
