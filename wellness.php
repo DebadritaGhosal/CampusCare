@@ -3,7 +3,6 @@ require_once 'includes/auth_check.php';
 require_once 'includes/db_connect.php';
 require_once 'includes/MentalHealthAnalyzer.php';
 
-
 if ($_SESSION['role'] !== 'student') {
     header("Location: login.php");
     exit;
