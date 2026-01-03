@@ -3,12 +3,12 @@ require_once 'includes/auth_check.php';
 require_once 'includes/db_connect.php';
 require_once 'includes/MentalHealthAnalyzer.php';
 
+$analyzer = new MentalHealthAnalyzer($pdo);
+
 if ($_SESSION['role'] !== 'student') {
     header("Location: login.php");
     exit;
 }
-
-$analyzer = new MentalHealthAnalyzer($pdo);
 
 $score = 0;
 $message = '';
@@ -32,22 +32,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Store message in database
         $stmt = $pdo->prepare(
-            "INSERT INTO mental_wellness_messages 
-            (user_id, message, keywords, severity_score, ai_analysis, department_referred) 
-            VALUES (?, ?, ?, ?, ?, ?)"
-        );
+    "INSERT INTO mental_wellness_messages 
+    (user_id, message, keywords, severity_score, ai_analysis, department_referred, anonymous) 
+    VALUES (?, ?, ?, ?, ?, ?, ?)"
+);
 
         $keywords_json = json_encode($analysis['found_keywords']);
         $analysis_json = json_encode($analysis);
-
-        $stmt->execute([
-            $user_id,
-            $mental_message,
-            $keywords_json,
-            $analysis['overall_score'],
-            $analysis_json,
-            $analysis['department']
-        ]);
+$stmt->execute([
+    $anonymous ? null : $user_id,   // hide identity
+    $mental_message,
+    $keywords_json,
+    $analysis['overall_score'],
+    $analysis_json,
+    $analysis['department'],
+    $anonymous
+]);
+       
 
         $message_id = $pdo->lastInsertId();
 
@@ -73,6 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($analysis['overall_score'] >= 50) {
             $analyzer->createAlert($user_id, $analysis, $message_id);
         }
+        // Notify assigned mentor if HIGH or CRITICAL risk
+if ($analysis['overall_score'] >= 60) {
+    $analyzer->notifyMentor($user_id, $analysis);
+}
 
         // Notify anti-ragging committee if score >= 75
         if ($analysis['overall_score'] >= 75) {

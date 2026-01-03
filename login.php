@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['name'] = $user['name'];
-                $_SESSION['role'] = $user['role'];
+                $_SESSION['role'] = strtolower(trim($user['role']));
                 $_SESSION['profile_pic'] = $user['profile_pic'];
                 
                 // Create profile picture from first letter
@@ -42,8 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $firstLetter = strtoupper(substr($user['name'], 0, 1));
                     $_SESSION['profile_initials'] = $firstLetter;
                 }
-                $_SESSION['role'] = strtolower(trim($user['role']));
-                // Redirect based on role
+                
                 switch ($_SESSION['role']) {
     case 'admin':
         header('Location: admin_dashboard.php');

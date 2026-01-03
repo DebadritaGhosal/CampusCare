@@ -14,7 +14,7 @@ if ($_SESSION['role'] !== 'mentor') {
 $mentor = [];
 try {
     $stmt = $pdo->prepare('SELECT m.* FROM mentors m 
-                          JOIN users u ON m.user_id = u.id 
+                          JOIN signup_details u ON m.user_id = u.id 
                           WHERE u.id = ?');
     $stmt->execute([$_SESSION['user_id']]);
     $mentor = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -28,7 +28,7 @@ try {
     $stmt = $pdo->prepare('SELECT s.*, u.name, u.email, u.phone 
                           FROM mentorship_assignments ma
                           JOIN students s ON ma.student_id = s.id
-                          JOIN users u ON s.user_id = u.id
+                          JOIN signup_details u ON s.user_id = u.id
                           WHERE ma.mentor_id = ? AND ma.status = "active"
                           ORDER BY ma.start_date DESC');
     $stmt->execute([$mentor['id']]);
