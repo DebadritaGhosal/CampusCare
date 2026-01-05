@@ -3,7 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
+<<<<<<< HEAD
 -- Generation Time: Jan 05, 2026 at 05:54 AM
+=======
+-- Generation Time: Jan 03, 2026 at 07:33 PM
+>>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -150,6 +154,7 @@ CREATE TABLE `marketplace` (
   `Condition` varchar(100) DEFAULT NULL,
   `seller_name` varchar(255) DEFAULT NULL,
   `category` varchar(255) DEFAULT NULL
+<<<<<<< HEAD
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -172,7 +177,16 @@ CREATE TABLE `mental_health_analysis` (
   `overall_score` int(11) DEFAULT NULL,
   `risk_level` enum('low','medium','high','critical') DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+=======
+>>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `marketplace`
+--
+
+INSERT INTO `marketplace` (`id`, `user_id`, `title`, `description`, `price`, `image`, `status`, `views`, `messages`, `posted_date`, `Location`, `Condition`, `seller_name`, `category`) VALUES
+(2, 10, 'uhh', '...............', 500.00, 'default_item.png', 'active', 0, 0, '2025-12-28 20:05:38', 'sarobar', 'good', NULL, 'books');
 
 -- --------------------------------------------------------
 
@@ -360,7 +374,11 @@ CREATE TABLE `signup_details` (
   `profile_pic` varchar(255) DEFAULT 'db.png',
   `joined_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+<<<<<<< HEAD
   `role` enum('student','mentor','admin') NOT NULL,
+=======
+  `role` enum('student','mentor','admin') NOT NULL DEFAULT 'student',
+>>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
   `last_login` timestamp NULL DEFAULT NULL,
   `status` enum('pending','active','rejected') NOT NULL DEFAULT 'active',
   `mentor_id` int(11) DEFAULT NULL
@@ -374,10 +392,14 @@ INSERT INTO `signup_details` (`id`, `name`, `email`, `password`, `major`, `dob`,
 (10, 'debadrita', 'it2024006@rcciit.org.in', '$2y$10$1UzXG2TjPzzB35D9cQbkXuay3NK7gDax8pvL1YRG8/dmhe8kW6FTi', 'Undeclared', '2025-12-24', 'Female', '6291933912', 'RCCIIT', 'uploads/profile_pics/user_10_1767460290.jpg', '2025-12-23 20:23:15', '2025-12-23 20:23:15', 'student', '2026-01-03 17:05:40', 'active', NULL),
 (11, 'JADU', 'arj@rcciit.org.in', '$2y$10$SW.iEWZ9mESZSIzO2wwZOePARCii4XPvdqpaioHVGKaI0qIJ46mH.', 'Undeclared', '1999-05-04', 'Male', '9330079483', 'RCCIIT', 'db.png', '2025-12-29 19:27:13', '2025-12-29 19:27:13', 'student', '2025-12-29 19:27:31', 'active', NULL),
 (12, 'JADU', 'it2024008@rcciit.org.in', '$2y$10$tg2KQcBlhirXt8tcgqR5.upHdQU0oqD/NCCDs5jc/HGoB8KzQasJ2', 'Undeclared', '1996-01-03', 'Male', '9330079483', 'RCCIIT', 'db.png', '2026-01-03 18:18:21', '2026-01-03 18:18:21', 'student', '2026-01-03 18:18:37', 'active', NULL),
+<<<<<<< HEAD
 (13, 'debadrita', 'mentor@rcciit.org.in', '$2y$10$O/OGaoWLDxaaQLGMlOQHjeq/ISKwPt6TXey8uE4ffBPDelk1Xify2', 'Undeclared', '1999-01-03', 'Male', '9330079483', 'RCCIIT', 'db.png', '2026-01-03 18:25:55', '2026-01-03 18:25:55', 'mentor', '2026-01-03 18:42:06', 'active', NULL),
 (14, 'debadrita gg', 'it2024056@rcciit.org.in', '$2y$10$fQEEOQQ4dpRBSjp2cAUG3.S9lkLCxETdhdKJlPAS/bBzUmodjkplK', 'Undeclared', '2026-01-05', 'Female', '6291933912', 'RCCIIT', 'db.png', '2026-01-04 20:30:51', '2026-01-04 20:30:51', 'student', '2026-01-05 03:19:07', 'active', NULL),
 (15, 'DG', 'it2024076@rcciit.org.in', '$2y$10$VVwPy2jT9iAbEEtaAnflQ.jFCxceX37oo79Z44s.ret1PgFNBbOgG', 'Undeclared', '1992-10-05', 'Male', '6291933914', 'RCCIIT', 'db.png', '2026-01-05 04:07:35', '2026-01-05 04:07:35', 'student', '2026-01-05 04:07:54', 'active', NULL),
 (16, 'DGh', 'mentor12@rcciit.org.in', '$2y$10$hcHMPABMztCgpgMl4pO4S.mD4/xszewqvJsc6DycYnsx1eJoHs3VO', 'Undeclared', '1999-01-05', 'Female', '6291933912', 'RCCIIT', 'db.png', '2026-01-05 04:09:15', '2026-01-05 04:09:15', 'student', '2026-01-05 04:09:29', 'active', NULL);
+=======
+(13, 'debadrita', 'mentor@rcciit.org.in', '$2y$10$O/OGaoWLDxaaQLGMlOQHjeq/ISKwPt6TXey8uE4ffBPDelk1Xify2', 'Undeclared', '1999-01-03', 'Male', '9330079483', 'RCCIIT', 'db.png', '2026-01-03 18:25:55', '2026-01-03 18:25:55', 'student', '2026-01-03 18:26:17', 'active', NULL);
+>>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
 
 -- --------------------------------------------------------
 
@@ -632,12 +654,15 @@ ALTER TABLE `department_keywords`
 --
 ALTER TABLE `marketplace`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+<<<<<<< HEAD
 
 --
 -- AUTO_INCREMENT for table `mental_health_analysis`
 --
 ALTER TABLE `mental_health_analysis`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+=======
+>>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
 
 --
 -- AUTO_INCREMENT for table `mental_wellness_messages`
@@ -691,7 +716,11 @@ ALTER TABLE `quiz_results`
 -- AUTO_INCREMENT for table `signup_details`
 --
 ALTER TABLE `signup_details`
+<<<<<<< HEAD
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+=======
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+>>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
 
 --
 -- AUTO_INCREMENT for table `signup_requests`

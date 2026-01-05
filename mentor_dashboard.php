@@ -1,6 +1,8 @@
 <?php
 require_once 'includes/auth_check.php';
 require_once 'includes/db_connect.php';
+session_start();
+var_dump($_SESSION['role']);
 
 // Only mentors can access this page
 if ($_SESSION['role'] !== 'mentor') {
@@ -11,13 +13,20 @@ if ($_SESSION['role'] !== 'mentor') {
 // Get mentor details
 $mentor = [];
 try {
+<<<<<<< HEAD
     $stmt = $pdo->prepare('SELECT * FROM users WHERE id = ?');
+=======
+    $stmt = $pdo->prepare('SELECT m.* FROM mentors m 
+                          JOIN signup_details u ON m.user_id = u.id 
+                          WHERE u.id = ?');
+>>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
     $stmt->execute([$_SESSION['user_id']]);
     $mentor = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $error = "Error fetching mentor details: " . $e->getMessage();
 }
 
+<<<<<<< HEAD
 // Fetch stats
 $stats = [
     'assigned_students' => 0,
@@ -62,6 +71,22 @@ $support_sessions->execute([$_SESSION['user_id']]);
 $support_sessions = $support_sessions->fetchAll(PDO::FETCH_ASSOC);
 
 $active_tab = isset($_GET['tab']) && in_array($_GET['tab'], ['tab1','tab2','tab3']) ? $_GET['tab'] : 'tab1';
+=======
+// Get assigned students
+$assignedStudents = [];
+try {
+    $stmt = $pdo->prepare('SELECT s.*, u.name, u.email, u.phone 
+                          FROM mentorship_assignments ma
+                          JOIN students s ON ma.student_id = s.id
+                          JOIN signup_details u ON s.user_id = u.id
+                          WHERE ma.mentor_id = ? AND ma.status = "active"
+                          ORDER BY ma.start_date DESC');
+    $stmt->execute([$mentor['id']]);
+    $assignedStudents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $error = "Error fetching students: " . $e->getMessage();
+}
+>>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
 ?>
 <!DOCTYPE html>
 <html lang="en">
