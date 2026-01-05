@@ -3,10 +3,6 @@ require_once 'includes/auth_check.php';
 require_once 'includes/db_connect.php';
 require_once 'includes/MentalHealthAnalyzer.php';
 
-<<<<<<< HEAD
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-=======
->>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
 $analyzer = new MentalHealthAnalyzer($pdo);
 
 if ($_SESSION['role'] !== 'student') {
@@ -16,26 +12,6 @@ if ($_SESSION['role'] !== 'student') {
 $user_id = $_SESSION['user_id'];
 $message = $_POST['message'];
 
-<<<<<<< HEAD
-// get latest quiz score (optional but recommended)
-$q = $pdo->prepare("SELECT score FROM quiz_results WHERE user_id=? ORDER BY id DESC LIMIT 1");
-$q->execute([$user_id]);
-$quiz_score = $q->fetchColumn();
-
-$analysis = $analyzer->analyzeMessage($message, $user_id, $quiz_score);
-
-// CLEAR HISTORY
-if (isset($_POST['clear_history'])) {
-    $stmt = $pdo->prepare(
-        "DELETE FROM mental_wellness_messages WHERE user_id = ?"
-    );
-    $stmt->execute([$_SESSION['user_id']]);
-    header("Location: wellness.php?cleared=1");
-    exit;
-}
-
-=======
->>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
 $score = 0;
 $message = '';
 $show_result = false;
@@ -79,32 +55,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // STORE MESSAGE
         $stmt = $pdo->prepare(
-<<<<<<< HEAD
-            "INSERT INTO mental_wellness_messages 
-            (user_id, message, keywords, severity_score, ai_analysis, department_referred, anonymous) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)"
-        );
-=======
     "INSERT INTO mental_wellness_messages 
     (user_id, message, keywords, severity_score, ai_analysis, department_referred, anonymous) 
     VALUES (?, ?, ?, ?, ?, ?, ?)"
 );
->>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
 
         $keywords_json = json_encode($analysis['found_keywords'] ?? []);
         $analysis_json = json_encode($analysis);
-<<<<<<< HEAD
-
-        $stmt->execute([
-            $anonymous ? null : $user_id,
-            $mental_message,
-            $keywords_json,
-            $analysis['overall_score'],
-            $analysis_json,
-            $analysis['department'],
-            $anonymous
-        ]);
-=======
 $stmt->execute([
     $anonymous ? null : $user_id,   // hide identity
     $mental_message,
@@ -115,7 +72,6 @@ $stmt->execute([
     $anonymous
 ]);
        
->>>>>>> 858f12862a83dbb1242a2e7cae30e34c263f6b61
 
         $message_id = $pdo->lastInsertId();
 
