@@ -2,10 +2,23 @@
 session_start();
 require_once 'includes/db_connect.php';
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
+}
+$dashboardLink = 'profile.php';
+if (isset($_SESSION['role'])) {
+    switch ($_SESSION['role']) {
+        case 'student':
+            $dashboardLink = 'student_dashboard.php';
+            break;
+        case 'mentor':
+            $dashboardLink = 'mentor_dashboard.php';
+            break;
+        case 'admin':
+            $dashboardLink = 'admin_dashboard.php';
+            break;
+    }
 }
 
 $message = '';
@@ -351,7 +364,8 @@ function resizeImage($file, $w, $h) {
             </div>
             
             <button type="submit" class="btn" id="submitBtn">Upload Picture</button>
-            <a href="dashboard.php" class="btn btn-secondary" style="text-decoration: none;">Back to Dashboard</a>
+            <a href="<?php echo $dashboardLink; ?>" class="btn btn-secondary" style="text-decoration:none;">
+            Back to Dashboard</a>
         </form>
     </div>
     

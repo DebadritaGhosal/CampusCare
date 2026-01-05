@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 21, 2025 at 05:04 PM
+-- Generation Time: Jan 05, 2026 at 05:54 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -50,6 +50,24 @@ CREATE TABLE `ai_analysis_reports` (
   `suggested_actions` text DEFAULT NULL,
   `analyzed_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `ai_analysis_reports`
+--
+
+INSERT INTO `ai_analysis_reports` (`id`, `message_id`, `keyword_scores`, `overall_score`, `risk_level`, `suggested_actions`, `analyzed_at`) VALUES
+(7, 7, 'null', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:00:09'),
+(8, 8, 'null', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:01:06'),
+(9, 9, 'null', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:01:20'),
+(10, 10, '0', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:03:34'),
+(11, 11, '0', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:03:59'),
+(12, 12, '0', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:21:38'),
+(13, 13, '0', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:23:15'),
+(14, 14, '0', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:24:25'),
+(15, 15, '0', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:35:41'),
+(16, 16, '0', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:36:33'),
+(17, 17, '[]', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:42:14'),
+(18, 18, '[]', 0, 'low', 'Talk to someone you trust; Schedule counselling support; Avoid isolation; Seek immediate help if unsafe', '2026-01-05 04:43:34');
 
 -- --------------------------------------------------------
 
@@ -127,7 +145,33 @@ CREATE TABLE `marketplace` (
   `status` enum('active','sold','inactive') DEFAULT 'active',
   `views` int(11) DEFAULT 0,
   `messages` int(11) DEFAULT 0,
-  `posted_date` timestamp NOT NULL DEFAULT current_timestamp()
+  `posted_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `Location` varchar(255) DEFAULT NULL,
+  `Condition` varchar(100) DEFAULT NULL,
+  `seller_name` varchar(255) DEFAULT NULL,
+  `category` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `marketplace`
+--
+
+INSERT INTO `marketplace` (`id`, `user_id`, `title`, `description`, `price`, `image`, `status`, `views`, `messages`, `posted_date`, `Location`, `Condition`, `seller_name`, `category`) VALUES
+(2, 10, 'uhh', '...............', 500.00, 'default_item.png', 'active', 0, 0, '2025-12-28 20:05:38', 'sarobar', 'good', NULL, 'books');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mental_health_analysis`
+--
+
+CREATE TABLE `mental_health_analysis` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `message` text DEFAULT NULL,
+  `overall_score` int(11) DEFAULT NULL,
+  `risk_level` enum('low','medium','high','critical') DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -138,15 +182,33 @@ CREATE TABLE `marketplace` (
 
 CREATE TABLE `mental_wellness_messages` (
   `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `message` text NOT NULL,
   `keywords` text DEFAULT NULL,
   `severity_score` int(11) DEFAULT 0,
   `ai_analysis` text DEFAULT NULL,
   `department_referred` varchar(100) DEFAULT NULL,
-  `status` enum('pending','reviewed','escalated','resolved') DEFAULT 'pending',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `anonymous` enum('yes','no') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `mental_wellness_messages`
+--
+
+INSERT INTO `mental_wellness_messages` (`id`, `user_id`, `message`, `keywords`, `severity_score`, `ai_analysis`, `department_referred`, `created_at`, `anonymous`) VALUES
+(7, NULL, 'i am being ragged constantly but am afraid to speak up', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:00:09', 'yes'),
+(8, NULL, 'i am being ragged constantly but am afraid to speak up', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:01:05', 'yes'),
+(9, NULL, 'i am being ragged', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:01:19', 'yes'),
+(10, NULL, 'i am being ragged', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:03:34', 'yes'),
+(11, NULL, 'i am being ragged', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:03:59', 'yes'),
+(12, NULL, 'i am being ragged', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:21:38', 'yes'),
+(13, NULL, 'i am being ragged', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:23:15', 'yes'),
+(14, NULL, 'i am being ragged', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:24:24', 'yes'),
+(15, NULL, 'i am being ragged', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:35:41', 'yes'),
+(16, 16, 'i am feeling low', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:36:33', ''),
+(17, 16, 'i am feeling low', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:42:14', ''),
+(18, 16, 'i am being ragged', '[]', 0, '{\"overall_score\":0,\"risk_level\":\"low\",\"found_keywords\":[],\"department\":\"General Support\",\"suggested_actions\":[\"Talk to someone you trust\",\"Schedule counselling support\",\"Avoid isolation\",\"Seek immediate help if unsafe\"]}', 'General Support', '2026-01-05 04:43:33', '');
 
 -- --------------------------------------------------------
 
@@ -178,6 +240,21 @@ CREATE TABLE `mentorship_assignments` (
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   `notes` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mentor_alerts`
+--
+
+CREATE TABLE `mentor_alerts` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `mentor_id` int(11) DEFAULT NULL,
+  `score` int(11) DEFAULT NULL,
+  `risk_level` varchar(20) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -230,6 +307,7 @@ CREATE TABLE `proposals` (
   `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `buyer_id` int(11) NOT NULL,
+  `buyer_name` varchar(50) NOT NULL,
   `proposed_price` decimal(10,2) NOT NULL,
   `message` text DEFAULT NULL,
   `status` enum('pending','accepted','rejected','countered','withdrawn') DEFAULT 'pending',
@@ -256,6 +334,13 @@ CREATE TABLE `quiz_results` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `quiz_results`
+--
+
+INSERT INTO `quiz_results` (`id`, `user_id`, `quiz_type`, `score`, `max_score`, `result_category`, `recommendations`, `created_at`) VALUES
+(1, 14, 'mental_wellness', 4, 9, 'moderate', NULL, '2026-01-05 03:25:23');
+
 -- --------------------------------------------------------
 
 --
@@ -267,7 +352,6 @@ CREATE TABLE `signup_details` (
   `name` varchar(100) NOT NULL DEFAULT 'User',
   `email` varchar(25) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `year` varchar(50) NOT NULL DEFAULT 'Student',
   `major` varchar(100) NOT NULL DEFAULT 'Undeclared',
   `dob` date NOT NULL,
   `gender` varchar(20) NOT NULL,
@@ -276,16 +360,24 @@ CREATE TABLE `signup_details` (
   `profile_pic` varchar(255) DEFAULT 'db.png',
   `joined_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `role` enum('student','mentor','admin','') NOT NULL DEFAULT 'student',
-  `last_login` timestamp NULL DEFAULT NULL
+  `role` enum('student','mentor','admin') NOT NULL,
+  `last_login` timestamp NULL DEFAULT NULL,
+  `status` enum('pending','active','rejected') NOT NULL DEFAULT 'active',
+  `mentor_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `signup_details`
 --
 
-INSERT INTO `signup_details` (`id`, `name`, `email`, `password`, `year`, `major`, `dob`, `gender`, `phone`, `college`, `profile_pic`, `joined_date`, `created_at`, `role`, `last_login`) VALUES
-(8, 'debadrita gg', 'it2024006@rcciit.org.in', '$2y$10$aoaro11UrujHANEFDIZx7O3MIixbxOIijPswKfig5lZcLNwQD1K6G', 'Student', 'Undeclared', '2006-09-10', 'Female', '6291933912', 'RCCIIT', 'db.png', '2025-12-21 11:46:03', '2025-12-21 11:46:03', 'student', NULL);
+INSERT INTO `signup_details` (`id`, `name`, `email`, `password`, `major`, `dob`, `gender`, `phone`, `college`, `profile_pic`, `joined_date`, `created_at`, `role`, `last_login`, `status`, `mentor_id`) VALUES
+(10, 'debadrita', 'it2024006@rcciit.org.in', '$2y$10$1UzXG2TjPzzB35D9cQbkXuay3NK7gDax8pvL1YRG8/dmhe8kW6FTi', 'Undeclared', '2025-12-24', 'Female', '6291933912', 'RCCIIT', 'uploads/profile_pics/user_10_1767460290.jpg', '2025-12-23 20:23:15', '2025-12-23 20:23:15', 'student', '2026-01-03 17:05:40', 'active', NULL),
+(11, 'JADU', 'arj@rcciit.org.in', '$2y$10$SW.iEWZ9mESZSIzO2wwZOePARCii4XPvdqpaioHVGKaI0qIJ46mH.', 'Undeclared', '1999-05-04', 'Male', '9330079483', 'RCCIIT', 'db.png', '2025-12-29 19:27:13', '2025-12-29 19:27:13', 'student', '2025-12-29 19:27:31', 'active', NULL),
+(12, 'JADU', 'it2024008@rcciit.org.in', '$2y$10$tg2KQcBlhirXt8tcgqR5.upHdQU0oqD/NCCDs5jc/HGoB8KzQasJ2', 'Undeclared', '1996-01-03', 'Male', '9330079483', 'RCCIIT', 'db.png', '2026-01-03 18:18:21', '2026-01-03 18:18:21', 'student', '2026-01-03 18:18:37', 'active', NULL),
+(13, 'debadrita', 'mentor@rcciit.org.in', '$2y$10$O/OGaoWLDxaaQLGMlOQHjeq/ISKwPt6TXey8uE4ffBPDelk1Xify2', 'Undeclared', '1999-01-03', 'Male', '9330079483', 'RCCIIT', 'db.png', '2026-01-03 18:25:55', '2026-01-03 18:25:55', 'mentor', '2026-01-03 18:42:06', 'active', NULL),
+(14, 'debadrita gg', 'it2024056@rcciit.org.in', '$2y$10$fQEEOQQ4dpRBSjp2cAUG3.S9lkLCxETdhdKJlPAS/bBzUmodjkplK', 'Undeclared', '2026-01-05', 'Female', '6291933912', 'RCCIIT', 'db.png', '2026-01-04 20:30:51', '2026-01-04 20:30:51', 'student', '2026-01-05 03:19:07', 'active', NULL),
+(15, 'DG', 'it2024076@rcciit.org.in', '$2y$10$VVwPy2jT9iAbEEtaAnflQ.jFCxceX37oo79Z44s.ret1PgFNBbOgG', 'Undeclared', '1992-10-05', 'Male', '6291933914', 'RCCIIT', 'db.png', '2026-01-05 04:07:35', '2026-01-05 04:07:35', 'student', '2026-01-05 04:07:54', 'active', NULL),
+(16, 'DGh', 'mentor12@rcciit.org.in', '$2y$10$hcHMPABMztCgpgMl4pO4S.mD4/xszewqvJsc6DycYnsx1eJoHs3VO', 'Undeclared', '1999-01-05', 'Female', '6291933912', 'RCCIIT', 'db.png', '2026-01-05 04:09:15', '2026-01-05 04:09:15', 'student', '2026-01-05 04:09:29', 'active', NULL);
 
 -- --------------------------------------------------------
 
@@ -346,9 +438,15 @@ CREATE TABLE `wellness_checks` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `score` int(11) NOT NULL,
-  `status` varchar(50) NOT NULL,
   `check_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `wellness_checks`
+--
+
+INSERT INTO `wellness_checks` (`id`, `user_id`, `score`, `check_date`) VALUES
+(1, 14, 4, '2026-01-05 03:25:23');
 
 --
 -- Indexes for dumped tables
@@ -398,6 +496,12 @@ ALTER TABLE `marketplace`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `mental_health_analysis`
+--
+ALTER TABLE `mental_health_analysis`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `mental_wellness_messages`
 --
 ALTER TABLE `mental_wellness_messages`
@@ -418,6 +522,12 @@ ALTER TABLE `mentorship_assignments`
   ADD PRIMARY KEY (`id`),
   ADD KEY `mentor_id` (`mentor_id`),
   ADD KEY `student_id` (`student_id`);
+
+--
+-- Indexes for table `mentor_alerts`
+--
+ALTER TABLE `mentor_alerts`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `negotiation`
@@ -497,7 +607,7 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `ai_analysis_reports`
 --
 ALTER TABLE `ai_analysis_reports`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `alerts`
@@ -521,13 +631,19 @@ ALTER TABLE `department_keywords`
 -- AUTO_INCREMENT for table `marketplace`
 --
 ALTER TABLE `marketplace`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `mental_health_analysis`
+--
+ALTER TABLE `mental_health_analysis`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `mental_wellness_messages`
 --
 ALTER TABLE `mental_wellness_messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `mentors`
@@ -539,6 +655,12 @@ ALTER TABLE `mentors`
 -- AUTO_INCREMENT for table `mentorship_assignments`
 --
 ALTER TABLE `mentorship_assignments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mentor_alerts`
+--
+ALTER TABLE `mentor_alerts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -563,13 +685,13 @@ ALTER TABLE `proposals`
 -- AUTO_INCREMENT for table `quiz_results`
 --
 ALTER TABLE `quiz_results`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `signup_details`
 --
 ALTER TABLE `signup_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `signup_requests`
@@ -593,7 +715,7 @@ ALTER TABLE `support_sessions`
 -- AUTO_INCREMENT for table `wellness_checks`
 --
 ALTER TABLE `wellness_checks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables

@@ -3,13 +3,32 @@ require_once 'includes/auth_check.php';
 require_once 'includes/db_connect.php';
 require_once 'includes/MentalHealthAnalyzer.php';
 
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$analyzer = new MentalHealthAnalyzer($pdo);
 
 if ($_SESSION['role'] !== 'student') {
     header("Location: login.php");
     exit;
 }
+$user_id = $_SESSION['user_id'];
+$message = $_POST['message'];
 
-$analyzer = new MentalHealthAnalyzer($pdo);
+// get latest quiz score (optional but recommended)
+$q = $pdo->prepare("SELECT score FROM quiz_results WHERE user_id=? ORDER BY id DESC LIMIT 1");
+$q->execute([$user_id]);
+$quiz_score = $q->fetchColumn();
+
+$analysis = $analyzer->analyzeMessage($message, $user_id, $quiz_score);
+
+// CLEAR HISTORY
+if (isset($_POST['clear_history'])) {
+    $stmt = $pdo->prepare(
+        "DELETE FROM mental_wellness_messages WHERE user_id = ?"
+    );
+    $stmt->execute([$_SESSION['user_id']]);
+    header("Location: wellness.php?cleared=1");
+    exit;
+}
 
 $score = 0;
 $message = '';
@@ -18,48 +37,70 @@ $analysis = null;
 $alerts = [];
 
 /* =========================
-   MESSAGE SUBMISSION HANDLER
+   POST HANDLER
 ========================= */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    /* =========================
+       MESSAGE SUBMISSION
+    ========================= */
     if (isset($_POST['mental_message'])) {
-        // Process mental wellness message
+
         $user_id = $_SESSION['user_id'];
         $mental_message = $_POST['mental_message'];
         $anonymous = isset($_POST['anonymous']) ? 1 : 0;
 
-        // AI Analysis
+        // AI ANALYSIS
         $analysis = $analyzer->analyzeMessage($mental_message, $user_id);
 
-        // Store message in database
+        // APPLY QUIZ SCORE IF PRESENT
+        $quiz_score = $_SESSION['mental_quiz_score'] ?? null;
+
+        if ($quiz_score !== null) {
+
+            // Convert /9 score → /100
+            $quiz_weighted = ($quiz_score / 9) * 100;
+
+            // Blend score: 70% AI + 30% quiz
+            $analysis['overall_score'] =
+                round(($analysis['overall_score'] * 0.7) + ($quiz_weighted * 0.3));
+
+            // Increase risk level if quiz indicates high distress
+            if ($quiz_score >= 7 && $analysis['risk_level'] !== 'critical') {
+                $analysis['risk_level'] = 'high';
+            }
+        }
+
+        // STORE MESSAGE
         $stmt = $pdo->prepare(
             "INSERT INTO mental_wellness_messages 
-            (user_id, message, keywords, severity_score, ai_analysis, department_referred) 
-            VALUES (?, ?, ?, ?, ?, ?)"
+            (user_id, message, keywords, severity_score, ai_analysis, department_referred, anonymous) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)"
         );
 
-        $keywords_json = json_encode($analysis['found_keywords']);
+        $keywords_json = json_encode($analysis['found_keywords'] ?? []);
         $analysis_json = json_encode($analysis);
 
         $stmt->execute([
-            $user_id,
+            $anonymous ? null : $user_id,
             $mental_message,
             $keywords_json,
             $analysis['overall_score'],
             $analysis_json,
-            $analysis['department']
+            $analysis['department'],
+            $anonymous
         ]);
 
         $message_id = $pdo->lastInsertId();
 
-        // Store AI analysis report
+        // STORE AI REPORT
         $stmt = $pdo->prepare(
             "INSERT INTO ai_analysis_reports 
             (message_id, keyword_scores, overall_score, risk_level, suggested_actions) 
             VALUES (?, ?, ?, ?, ?)"
         );
 
-        $keyword_scores_json = json_encode($analysis['category_scores']);
+        $keyword_scores_json = json_encode($analysis['keyword_scores'] ?? []);
         $suggested_actions = implode('; ', $analysis['suggested_actions']);
 
         $stmt->execute([
@@ -70,27 +111,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $suggested_actions
         ]);
 
-        // Create alert if score is high
+        // ALERTS
         if ($analysis['overall_score'] >= 50) {
             $analyzer->createAlert($user_id, $analysis, $message_id);
         }
 
-        // Notify anti-ragging committee if score >= 75
+        if ($analysis['overall_score'] >= 60) {
+            $analyzer->notifyMentor($user_id, $analysis);
+        }
+
         if ($analysis['overall_score'] >= 75) {
-            $notified_count = $analyzer->notifyAntiRaggingCommittee($user_id, $analysis, $mental_message);
+            $notified_count = $analyzer->notifyAntiRaggingCommittee(
+                $user_id,
+                $analysis,
+                $mental_message
+            );
             $alerts[] = "⚠️ High-risk alert sent to $notified_count anti-ragging committee members";
         }
 
-        $message = "Your message has been analyzed. Score: " . $analysis['overall_score'] .
-            ". Referred to: " . $analysis['department'];
+        // USER MESSAGE
+        $message = "Your message has been analyzed. Score: " .
+            $analysis['overall_score'] . ". Referred to: " . $analysis['department'];
 
-    } elseif (isset($_POST['answers']) && is_array($_POST['answers'])) {
-        // Process quiz submission
+        // CLEAR QUIZ SCORE AFTER USE
+        unset($_SESSION['mental_quiz_score']);
+    }
+
+    /* =========================
+       QUIZ SUBMISSION
+    ========================= */
+    elseif (isset($_POST['answers']) && is_array($_POST['answers'])) {
+
         $answers = array_map('intval', $_POST['answers']);
         $score = array_sum($answers);
         $show_result = true;
 
-        // Determine result category
         if ($score <= 2) {
             $message = "You're doing well, keep it up! 😊";
             $result_category = 'good';
@@ -102,18 +157,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result_category = 'high';
         }
 
-        // Store quiz result
+        // SAVE QUIZ RESULT
         $stmt = $pdo->prepare(
             "INSERT INTO quiz_results (user_id, quiz_type, score, max_score, result_category) 
-             VALUES (?, 'mental_wellness', ?, 9, ?)"
+            VALUES (?, 'mental_wellness', ?, 9, ?)"
         );
         $stmt->execute([$_SESSION['user_id'], $score, $result_category]);
 
-        // Store as wellness check
         $stmt = $pdo->prepare(
             "INSERT INTO wellness_checks (user_id, score) VALUES (?, ?)"
         );
         $stmt->execute([$_SESSION['user_id'], $score]);
+
+        // KEEP SCORE FOR AI BLENDING
+        $_SESSION['mental_quiz_score'] = $score;
 
         $_SESSION['quiz_result'] = [
             'score' => $score,
@@ -123,32 +180,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// RETAKE QUIZ
 if (isset($_GET['retake'])) {
     $show_result = false;
-    unset($_SESSION['quiz_result']);
+    unset($_SESSION['quiz_result'], $_SESSION['mental_quiz_score']);
 }
 
-// Fetch user's recent messages and alerts
+/* =========================
+   FETCH HISTORY + ALERTS
+========================= */
+
 $user_messages = [];
 $user_alerts = [];
 
-if (isset($_SESSION['user_id'])) {
-    $stmt = $pdo->prepare(
-        "SELECT * FROM mental_wellness_messages 
-         WHERE user_id = ? 
-         ORDER BY created_at DESC LIMIT 5"
-    );
-    $stmt->execute([$_SESSION['user_id']]);
-    $user_messages = $stmt->fetchAll();
+$stmt = $pdo->prepare(
+    "SELECT * FROM mental_wellness_messages 
+     WHERE user_id = ? 
+     ORDER BY created_at DESC LIMIT 5"
+);
+$stmt->execute([$_SESSION['user_id']]);
+$user_messages = $stmt->fetchAll();
 
-    $stmt = $pdo->prepare(
-        "SELECT * FROM alerts 
-         WHERE user_id = ? AND is_read = 0 
-         ORDER BY created_at DESC LIMIT 10"
-    );
-    $stmt->execute([$_SESSION['user_id']]);
-    $user_alerts = $stmt->fetchAll();
-}
+$stmt = $pdo->prepare(
+    "SELECT * FROM alerts 
+     WHERE user_id = ? AND is_read = 0 
+     ORDER BY created_at DESC LIMIT 10"
+);
+$stmt->execute([$_SESSION['user_id']]);
+$user_alerts = $stmt->fetchAll();
+
 ?>
 
 <!DOCTYPE html>
@@ -170,12 +230,13 @@ if (isset($_SESSION['user_id'])) {
         --success-color: #28a745;
     }
     .dark {
+        --primary-color: #70c4a8ff;
         --background-color: #1a1a1a;
         --text-color: #fff;
         --card-bg: #2d2d2d;
         --border-color: #444;
     }
-    body { font-family: sans-serif; background: var(--background-color); color: var(--text-color); margin:0; padding:20px; transition:0.3s;}
+    body { font-family: sans-serif; background: #52957eff; color: var(--text-color); margin:0; padding:20px; transition:0.3s;}
     .container { max-width:1200px; margin:0 auto; }
     .card { background: var(--card-bg); padding:20px; border-radius:10px; margin-bottom:20px; box-shadow:0 2px 6px rgba(0,0,0,0.1);}
     .card-title { color: var(--primary-color); margin-top:0; border-bottom:2px solid var(--primary-color); padding-bottom:5px;}
@@ -199,17 +260,30 @@ if (isset($_SESSION['user_id'])) {
     .alert-danger { border-color: var(--danger-color); }
     .alert-warning { border-color: var(--warning-color); }
     .alert-info { border-color: var(--primary-color); }
+    .theme-toggle{
+   position:fixed;
+   right:20px;
+   top:20px;
+   padding:8px 12px;
+   border-radius:50%;
+   border:none;
+   cursor:pointer;
+   font-size:18px;
+}
+
 </style>
 </head>
 <body class="<?php echo isset($_COOKIE['theme']) && $_COOKIE['theme']==='dark'?'dark':'';?>">
-<div class="container">
-              <div class="theme-toggle" id="toggleTheme">☾</div>
+<div class="container" >
+            <button id="toggleTheme" class="theme-toggle" style="background: #52957eff;">☾</button>
     <div class="tab-container">
-        <div class="tab active" onclick="switchTab('message')">Share Message</div>
-        <div class="tab" onclick="switchTab('quiz')">Wellness Quiz</div>
-        <div class="tab" onclick="switchTab('history')">My History</div>
-        <div class="tab" onclick="switchTab('alerts')">Alerts (<?php echo count($user_alerts); ?>)</div>
-    </div>
+        <div class="tab active" onclick="switchTab('message', this)">Share Message</div>
+<div class="tab" onclick="switchTab('quiz', this)">Wellness Quiz</div>
+<div class="tab" onclick="switchTab('history', this)">My History</div>
+<div class="tab" onclick="switchTab('alerts', this)">
+   Alerts (<?php echo count($user_alerts); ?>)
+</div>
+
 
     <!-- Message Tab -->
     <div id="messageTab" class="tab-content active">
@@ -226,21 +300,31 @@ if (isset($_SESSION['user_id'])) {
                 </div>
                 <button type="submit" class="btn">Analyze & Submit</button>
             </form>
-            <?php if($analysis): ?>
-                <div class="ai-analysis-result">
-                    <h3>AI Analysis Result</h3>
-                    <p><strong>Score:</strong> <?php echo $analysis['overall_score']; ?>/100</p>
-                    <p><strong>Risk Level:</strong> 
-                        <span class="risk-badge risk-<?php echo $analysis['risk_level'];?>"><?php echo ucfirst($analysis['risk_level']);?></span>
-                    </p>
-                    <p><strong>Department:</strong> <?php echo $analysis['department'];?></p>
-                    <?php if(!empty($analysis['found_keywords'])): ?>
-                        <p><strong>Keywords:</strong>
-                        <?php foreach($analysis['found_keywords'] as $cat=>$keys) foreach($keys as $k) echo "<span class='risk-badge'>$k</span>"; ?>
-                        </p>
-                    <?php endif;?>
-                </div>
-            <?php endif;?>
+           <?php if($analysis): ?>
+    <div class="ai-analysis-result">
+        <h3>AI Analysis Result</h3>
+        <p><strong>Score:</strong> <?php echo $analysis['overall_score']; ?>/100</p>
+        <p><strong>Risk Level:</strong> 
+            <span class="risk-badge risk-<?php echo $analysis['risk_level'];?>"><?php echo ucfirst($analysis['risk_level']);?></span>
+        </p>
+        <p><strong>Department:</strong> <?php echo $analysis['department'];?></p>
+    </div>
+
+    <?php
+    if ($analysis['risk_level'] == 'critical') 
+        echo "<div class='alert alert-danger'>🚨 Critical Mental Health Risk — Please seek support immediately</div>";
+
+    elseif ($analysis['risk_level'] == 'high') 
+        echo "<div class='alert alert-warning'>⚠ High Mental Health Risk Detected</div>";
+
+    elseif ($analysis['risk_level'] == 'medium') 
+        echo "<div class='alert alert-info'>🧠 Moderate Emotional Stress</div>";
+
+    else 
+        echo "<div class='alert alert-success'>😊 You seem emotionally stable</div>";
+    ?>
+<?php endif; ?>
+
         </div>
     </div>
 
@@ -272,13 +356,26 @@ if (isset($_SESSION['user_id'])) {
                 <p><?php echo htmlspecialchars($message); ?></p>
                 <a href="wellness.php?retake=true" class="btn">Retake Quiz</a>
             <?php endif;?>
+            <?php if(isset($analysis)) : ?>
+
         </div>
     </div>
 
     <!-- History Tab -->
     <div id="historyTab" class="tab-content">
         <div class="card">
-            <h2 class="card-title">Message History</h2>
+            <h2 class="card-title">
+   Message History
+</h2>
+
+<?php if(!empty($user_messages)): ?>
+<form method="POST" onsubmit="return confirm('Delete all your past messages?')">
+    <button name="clear_history" class="btn btn-danger">
+        Clear My History 🗑
+    </button>
+</form>
+<?php endif; ?>
+
             <?php if(empty($user_messages)) echo "<p>No messages yet.</p>"; ?>
             <?php foreach($user_messages as $msg): $ai = json_decode($msg['ai_analysis'],true); ?>
                 <div class="alert-item alert-info">
@@ -309,20 +406,25 @@ if (isset($_SESSION['user_id'])) {
 </div>
 
 <script>
+    function switchTab(tab, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById(tab+'Tab').classList.add('active');
+}
+
   document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.getElementById('toggleTheme');
-    toggleBtn.addEventListener('click', () => {
-      document.body.classList.toggle('light');
-      toggleBtn.textContent = document.body.classList.contains('light') ? '☀︎' : '☾';
-
-    });
-function switchTab(tab){
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    event.target.classList.add('active');
-    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-    document.getElementById(tab+'Tab').classList.add('active');
-}
+toggleBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  toggleBtn.textContent = document.body.classList.contains('dark') ? '☀︎' : '☾';
+});
   });
 </script>
 </body>
+<?php if(isset($_GET['cleared'])): ?>
+<div style="background:#d1ffd6;padding:10px;border-radius:8px;margin-bottom:10px;">
+   ✔ Your history has been cleared
+</div>
+<?php endif;?>
 </html>

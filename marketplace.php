@@ -24,8 +24,9 @@ $items_js = array_map(function($it) {
         'title' => $it['title'] ?? '',
         'price' => isset($it['price']) ? (float)$it['price'] : 0,
         'image' => $it['image'] ?? 'default_item.png',
-        'location' => $it['Location'] ?? '',      // may be empty if not stored in marketplace
-        'condition' => $it['Condition'] ?? '',
+        'description' => $it['description'] ?? '',
+        'location' => $it['location'] ?? $it['Location'] ?? '',
+        'condition' => $it['condition'] ?? $it['Condition'] ?? '',
         'seller' => $it['seller_name'] ?? '',
         'category' => $it['category'] ?? ''
     ];
@@ -38,6 +39,23 @@ $items_js = array_map(function($it) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CampusCare Marketplace</title>
     <link rel="stylesheet" href="styleMarket.css">
+    <style>
+        .contact-btn {
+            background-color: #059668;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        .contact-btn:hover {
+            background-color: #047857;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -147,15 +165,14 @@ $items_js = array_map(function($it) {
         const imageContainerElement = document.querySelector('.imageContainer');
         const btn = document.querySelector('.btn');
 
-        function loadMoreCards() {
-            const rand = Math.floor(Math.random() * 6) + 1;
-            const cardToClone = document.getElementById(`set${rand}`);
-            
-            if (cardToClone) {
-                const clone = cardToClone.cloneNode(true);
-                imageContainerElement.appendChild(clone);
-            }
-        }
+       function loadMoreCards() {
+    const rand = Math.floor(Math.random() * 6) + 1;
+    const cardToClone = document.getElementById(`set${rand}`);
+    if (cardToClone) {
+        const clone = cardToClone.cloneNode(true);
+        imageContainerElement.appendChild(clone);
+    }
+}
 
         if (btn) {
             btn.addEventListener('click', () => {
@@ -184,7 +201,7 @@ $items_js = array_map(function($it) {
                             <h2>${item.title}</h2>
                             <h3>Rs.${item.price}/-</h3>
                         </div>
-                        <p>${item.title} available in ${item.location}</p>
+                        <p>${item.description}</p>
                         <div class="parting">
                             <p><span aria-label="Location: ${item.location}">⚲ ${item.location}</span></p>
                             <h4>${item.condition}</h4>
@@ -193,7 +210,7 @@ $items_js = array_map(function($it) {
                             <h5>Seller:</h5>
                             <h6>${item.seller}</h6>
                         </div>
-                        <button aria-label="Contact seller ${item.seller}">🗨Contact Seller</button>
+                        <button class="contact-btn" aria-label="Contact seller ${item.seller}">🗨Contact Seller</button>
                     </div>
                 `;
                 container.appendChild(card);
